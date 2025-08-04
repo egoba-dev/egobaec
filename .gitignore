@@ -1,0 +1,21 @@
+.env
+.env.*
+
+# キャッシュやログ
+html/var/cache/
+html/var/log/
+html/var/session/
+
+# アップロードファイル（必要に応じて）
+html/var/upload/
+
+# Composer・Node依存
+/vendor/
+/node_modules/
+
+# IDE・エディタ設定
+.idea/
+.vscode/
+
+# OSファイル
+.DS_Store
