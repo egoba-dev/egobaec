@@ -1,0 +1,75 @@
+<div class="tab-pane fade" id="rental" role="tabpanel" aria-labelledby="rental-tab">
+    <div class="card rounded border-0 mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-inline-block">
+                        <span class="card-title">{{ 'rental.admin.product.rental_setting'|trans }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if form.rental_product is defined %}
+                <div class="row">
+                    <div class="col-3">
+                        <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'rental.admin.product.rental_flg_tooltip'|trans }}">
+                            <span>{{ form_label(form.rental_product.rental_flg) }}</span>
+                            <i class="fa fa-question-circle fa-lg ml-1"></i>
+                        </div>
+                    </div>
+                    <div class="col mb-2">
+                        {{ form_widget(form.rental_product.rental_flg) }}
+                        {{ form_errors(form.rental_product.rental_flg) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ form_label(form.rental_product.rental_price_daily) }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        {{ form_widget(form.rental_product.rental_price_daily) }}
+                        {{ form_errors(form.rental_product.rental_price_daily) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ form_label(form.rental_product.rental_price_weekly) }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        {{ form_widget(form.rental_product.rental_price_weekly) }}
+                        {{ form_errors(form.rental_product.rental_price_weekly) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ form_label(form.rental_product.rental_price_monthly) }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        {{ form_widget(form.rental_product.rental_price_monthly) }}
+                        {{ form_errors(form.rental_product.rental_price_monthly) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ form_label(form.rental_product.rental_max_days) }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        {{ form_widget(form.rental_product.rental_max_days) }}
+                        {{ form_errors(form.rental_product.rental_max_days) }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <p>レンタル設定フォームが見つかりません (form.rental_productが定義されていません)</p>
+                    <p>フォーム構造の確認:</p>
+                    <ul>
+                        {% for key, value in form %}
+                            <li>{{ key }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

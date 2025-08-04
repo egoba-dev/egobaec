@@ -1,0 +1,47 @@
+name: CarouselFeature
+code: CarouselFeature
+version: 1.0.0
+eccube_version: ['4.3', '5.0', '5.1']
+description: 'WordPress風カルーセル特集機能プラグイン'
+author: 'egoba'
+homepage: ''
+
+services:
+    Plugin\CarouselFeature\Service\CarouselService:
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@Plugin\CarouselFeature\Service\ImageService'
+
+    Plugin\CarouselFeature\Service\ImageService:
+        public: true
+        arguments:
+            - '@kernel'
+            
+
+    Plugin\CarouselFeature\Service\ConfigService:
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    Plugin\CarouselFeature\Navigation\AdminNavigationProvider:
+        tags:
+            - { name: admin.navigation, priority: 100 }
+
+routes:
+    carousel_feature_admin:
+        resource: '@CarouselFeature/Controller/Admin/'
+        type: annotation
+        prefix: '/%eccube_admin_route%/carousel_feature'
+
+    carousel_feature_block:
+        resource: '@CarouselFeature/Controller/Block/'
+        type: annotation
+
+blocks:
+    - 
+        name: 'カルーセル特集'
+        code: 'carousel_feature'
+        template: '@CarouselFeature/Block/carousel_feature.twig'
+        controller: 'Plugin\CarouselFeature\Controller\Block\CarouselBlockController::index'
+        description: 'カルーセル形式で特集記事を表示します'

@@ -1,0 +1,15 @@
+# CarouselFeature Upload Security
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|pl|py|jsp|asp|aspx|sh|cgi|exe|com|bat|cmd|scr|vbs|js|htaccess|htpasswd)$">
+    order allow,deny
+    deny from all
+</FilesMatch>
+
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|bmp|ico|svg)$">
+    order allow,deny
+    allow from all
+</FilesMatch>
+
+<FilesMatch "^\.|~$|\.bak$|\.backup$|\.old$|\.tmp$|\.temp$">
+    order allow,deny
+    deny from all
+</FilesMatch>

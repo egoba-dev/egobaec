@@ -1,0 +1,20 @@
+# レンタルカート追加
+rental_add_cart:
+    path: /rental/add_cart
+    methods: [POST]
+    defaults:
+        _controller: Plugin\Rental\Controller\Front\RentalProductController::addCart
+
+# マイページのレンタル履歴追加
+mypage_rental:
+    path: /mypage/rental
+    methods: [GET]
+    defaults:
+        _controller: Plugin\Rental\Controller\Front\RentalMyPageController::index
+        
+# レンタル履歴（マイページ）
+mypage_rental_history:
+    path: /mypage/rental/history
+    methods: [GET]
+    defaults:
+        _controller: Plugin\Rental\Controller\Front\RentalMyPageController::index

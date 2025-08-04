@@ -1,0 +1,45 @@
+
+{# front/rental_form.twig #}
+{# 商品がレンタル可能な場合のみ表示 #}
+{# 商品詳細ページに表示するレンタルフォームのテンプレート #}
+
+{% if app.environment == 'dev' %}
+<div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border: 1px solid #ddd;">
+    <h5>デバッグ情報</h5>
+    <div id="debug-info"></div>
+</div>
+{% endif %}
+
+{% if rental_product and rental_product.rentalFlg %}
+    <div class="ec-productRole__rentalArea">
+        <div class="card rounded border mb-4">
+            <div class="card-header">
+                <div class="d-inline-block">
+                    <span class="card-title font-weight-bold">{{ 'rental.front.rental_title'|trans }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">{{ 'rental.front.rental_price'|trans }}</label>
+                    <div class="col-md-8">
+                        <span class="form-control-plaintext font-weight-bold text-danger">
+                            {{ rental_product.rental_price_daily|price }} / {{ 'common.day'|trans }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group row mt-4">
+                    <div class="col-12 text-center">
+                        <a href="{{ url('rental_input', {'id': Product.id}) }}" class="btn btn-primary">
+                            {{ 'rental.front.rental_title'|trans }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="rental-terms mt-3">
+                    <small class="text-muted">{{ 'rental.front.rental_terms_notes'|trans }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

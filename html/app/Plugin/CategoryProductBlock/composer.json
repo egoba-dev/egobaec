@@ -1,0 +1,20 @@
+{
+    "name": "ec-cube/category-product-block",
+    "version": "1.0.0",
+    "description": "カテゴリー商品ブロックプラグイン",
+    "type": "eccube-plugin",
+    "license": "MIT",
+    "require": {
+        "ec-cube/plugin-installer": "~2.0"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Plugin\\CategoryProductBlock\\": ""
+        }
+    },
+    "extra": {
+        "code": "CategoryProductBlock",
+        "name": "カテゴリー商品ブロック"
+    }
+}

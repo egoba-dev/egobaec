@@ -1,0 +1,313 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['content', 'carousel_feature'] %}
+
+{% block title %}カルーセル特集 - 新規作成{% endblock %}
+{% block sub_title %}新規作成{% endblock %}
+
+{% block stylesheet %}
+<style>
+/* 管理画面用スタイル */
+.image-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.image-upload-area:hover,
+.image-upload-area.dragover {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 150px;
+    height: 100px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-preview-item:hover .image-preview-overlay {
+    opacity: 1;
+}
+
+.link-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.link-text-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.rich-editor {
+    min-height: 200px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="c-contentsArea__cols">
+    <div class="c-contentsArea__primaryCol">
+        <div class="c-primaryCol">
+            
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'carouselForm'}}) }}
+            
+            {# 基本情報 #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">基本情報</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ form_row(form.title) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.status) }}
+                        </div>
+                    </div>
+                    
+                    {{ form_row(form.content, {
+                        'attr': {
+                            'class': 'form-control rich-editor',
+                            'data-editor': 'richtext'
+                        }
+                    }) }}
+                </div>
+            </div>
+
+            {# 画像アップロード #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">画像</span>
+                    <small class="text-muted ml-2">※カルーセル表示用の画像をアップロードしてください</small>
+                </div>
+                <div class="card-body">
+                    <div class="image-upload-area">
+                        {{ form_row(form.images, {
+                            'attr': {
+                                'class': 'form-control-file image-upload-input',
+                                'accept': 'image/*',
+                                'multiple': true
+                            }
+                        }) }}
+                        
+                        <div class="upload-dropzone" id="uploadDropzone">
+                            <div class="upload-message">
+                                <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p>ここに画像をドラッグ&ドロップするか、クリックしてファイルを選択してください</p>
+                                <small class="text-muted">
+                                    対応形式: JPEG, PNG, GIF, WebP (最大10MB)
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="image-preview-container" id="imagePreview">
+                            <!-- 画像プレビューがここに表示される -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# リンク設定 #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">リンク設定</span>
+                    <small class="text-muted ml-2">※カルーセル画像をクリックした時の遷移先を設定します</small>
+                </div>
+                <div class="card-body">
+                    {{ form_row(form.link_type, {
+                        'attr': {'class': 'link-type-selector'}
+                    }) }}
+                    
+                    <div class="link-fields mt-3">
+                        <div class="link-field" data-type="product" style="display: none;">
+                            {{ form_row(form.Product, {
+                                'attr': {
+                                    'class': 'form-control product-selector',
+                                    'data-placeholder': '商品を検索...'
+                                }
+                            }) }}
+                        </div>
+                        
+                        <div class="link-field" data-type="url" style="display: none;">
+                            {{ form_row(form.link_url, {
+                                'attr': {
+                                    'placeholder': 'https://example.com または /path/to/page'
+                                }
+                            }) }}
+                        </div>
+                        
+                        <div class="link-text-field" style="display: none;">
+                            {{ form_row(form.link_text, {
+                                'attr': {
+                                    'placeholder': 'ボタンのテキスト（空の場合は自動生成）'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# アクションボタン #}
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{{ url('admin_carousel_feature_list') }}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> 一覧に戻る
+                            </a>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button type="submit" name="mode" value="draft" class="btn btn-warning">
+                                <i class="fa fa-save"></i> 下書き保存
+                            </button>
+                            <button type="submit" name="mode" value="publish" class="btn btn-success">
+                                <i class="fa fa-eye"></i> 保存して公開
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{# CSRFトークン #}
+<input type="hidden" id="csrf_token" value="{{ csrf_token('authenticate') }}">
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CarouselFeature admin form loaded');
+    
+    // リンクタイプ選択の制御
+    const linkTypeSelect = document.querySelector('select[name*="link_type"]');
+    if (linkTypeSelect) {
+        const linkFields = document.querySelectorAll('.link-field');
+        const linkTextField = document.querySelector('.link-text-field');
+        
+        function updateLinkFields() {
+            const selectedType = linkTypeSelect.value;
+            
+            // 全てのフィールドを非表示
+            linkFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            if (linkTextField) linkTextField.style.display = 'none';
+            
+            // 選択されたタイプに応じてフィールドを表示
+            switch(selectedType) {
+                case 'product':
+                    const productField = document.querySelector('.link-field[data-type="product"]');
+                    if (productField) productField.style.display = 'block';
+                    if (linkTextField) linkTextField.style.display = 'block';
+                    break;
+                    
+                case 'external':
+                case 'internal':
+                    const urlField = document.querySelector('.link-field[data-type="url"]');
+                    if (urlField) urlField.style.display = 'block';
+                    if (linkTextField) linkTextField.style.display = 'block';
+                    break;
+            }
+        }
+        
+        // 初期表示
+        updateLinkFields();
+        
+        // 変更時の処理
+        linkTypeSelect.addEventListener('change', updateLinkFields);
+    }
+    
+    // 画像アップロード機能
+    const uploadDropzone = document.getElementById('uploadDropzone');
+    const fileInput = document.querySelector('input[type="file"][accept*="image"]');
+    
+    if (uploadDropzone && fileInput) {
+        uploadDropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        uploadDropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.add('dragover');
+        });
+        
+        uploadDropzone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+        });
+        
+        uploadDropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+    }
+    
+    // フォーム送信時のバリデーション
+    const form = document.getElementById('carouselForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const title = form.querySelector('input[name*="title"]');
+            if (title && !title.value.trim()) {
+                alert('タイトルを入力してください。');
+                e.preventDefault();
+                title.focus();
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'default_frame.twig' %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>レンタル支払い</h1>
+        </div>
+        
+        <p>商品：{{ Product.name }}</p>
+        <p>期間：{{ rental.start_date }} 〜 {{ rental.end_date }}</p>
+        <p>金額：{{ rental.price|price }}</p>
+        
+        <form method="post">
+            {{ form_widget(form) }}
+            <button type="submit">確認画面へ</button>
+        </form>
+    </div>
+{% endblock %}

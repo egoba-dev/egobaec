@@ -1,0 +1,336 @@
+
+# 多言語対応のために翻訳ファイル
+
+# 管理画面用
+rental.admin.rental.title: レンタル管理
+rental.admin.rental.sub_title: 現在のレンタル状況
+rental.admin.rental.tooltip: 現在レンタル中または予約中の商品一覧です。
+rental.admin.rental.list_title: レンタル中商品一覧
+rental.admin.rental.id: ID
+rental.admin.rental.product_name: 商品名
+rental.admin.rental.order_no: 注文番号
+rental.admin.rental.customer_name: 顧客名
+rental.admin.rental.rental_start_date: レンタル開始日
+rental.admin.rental.rental_end_date: レンタル終了予定日
+rental.admin.rental.return_date: 返却日
+rental.admin.rental.status: 状態
+rental.admin.rental.edit_title: レンタル情報編集
+rental.admin.rental.edit_sub_title: レンタル情報の詳細編集
+rental.admin.rental.basic_info: 基本情報
+rental.admin.rental.to_order: 注文情報を表示
+rental.admin.rental.rental_info: レンタル情報
+rental.admin.rental.not_found: レンタル情報が見つかりませんでした。
+rental.admin.rental.save_complete: レンタル情報を保存しました。
+rental.admin.rental.return: 返却処理
+rental.admin.rental.return_complete: 返却処理が完了しました。
+rental.admin.rental.return_error: 返却処理に失敗しました。
+rental.admin.rental.cancel: キャンセル
+rental.admin.rental.cancel_confirm: このレンタルをキャンセルしてもよろしいですか？
+rental.admin.rental.cancel_complete: キャンセル処理が完了しました。
+rental.admin.rental.cancel_error: キャンセル処理に失敗しました。
+rental.admin.rental.no_data: レンタル中の商品はありません。
+
+rental.admin.history.title: レンタル履歴
+rental.admin.history.sub_title: 過去のレンタル履歴
+rental.admin.history.tooltip: 返却済みまたはキャンセルされたレンタル履歴です。
+rental.admin.history.list_title: レンタル履歴一覧
+rental.admin.history.no_data: レンタル履歴はありません。
+
+rental.admin.overdue.title: 返却遅延管理
+rental.admin.overdue.sub_title: 返却期限切れの商品
+rental.admin.overdue.tooltip: 返却期限を過ぎているレンタル商品です。
+rental.admin.overdue.list_title: 返却遅延商品一覧
+rental.admin.overdue.overdue_days: 遅延日数
+rental.admin.overdue.days: 日
+rental.admin.overdue.no_data: 返却遅延の商品はありません。
+rental.admin.overdue.updated: '%count%件の遅延情報を更新しました。'
+
+rental.admin.order.status.reserved: レンタル予約中
+rental.admin.order.status.renting: レンタル中
+rental.admin.order.status.returned: 返却済み
+rental.admin.order.status.overdue: 返却遅延
+rental.admin.order.status.canceled: キャンセル
+rental.admin.order.rental_start_date: レンタル開始日
+rental.admin.order.rental_end_date: レンタル終了予定日
+rental.admin.order.return_date: 返却日
+rental.admin.order.rental_status: レンタル状態
+rental.admin.order.end_date_must_be_greater: 終了日は開始日より後である必要があります。
+
+rental.admin.product.rental_flg: レンタル可能
+rental.admin.product.rental_price_daily: 日額レンタル料金
+rental.admin.product.rental_price_weekly: 週額レンタル料金
+rental.admin.product.rental_price_monthly: 月額レンタル料金
+rental.admin.product.rental_max_days: 最大レンタル可能日数
+rental.admin.product.greater_than_zero: 0以上の値を入力してください。
+
+rental.admin.config.title: レンタル設定
+rental.admin.config.sub_title: レンタル機能の全般設定
+rental.admin.config.basic_info: 基本設定
+rental.admin.config.rental_terms: レンタル利用規約
+rental.admin.config.auto_approval: 自動承認
+rental.admin.config.default_max_days: デフォルト最大レンタル日数
+rental.admin.config.default_max_days_note: 特に指定がない商品に適用される最大レンタル日数です。
+rental.admin.config.auto_approval_note: 自動承認を有効にすると、注文完了時に自動的にレンタル予約が承認されます。
+rental.admin.config.terms_info: 利用規約設定
+rental.admin.config.rental_terms_note: レンタル利用時にフロント画面に表示される利用規約です。
+rental.admin.config.save_complete: 設定を保存しました。
+rental.admin.config.greater_than_zero: 0より大きい値を入力してください。
+
+rental.admin.common.operation: 操作
+rental.admin.common.back: 戻る
+rental.admin.common.save: 保存
+rental.admin.common.edit: 編集
+
+# フロント画面用
+rental.front.rental_title: レンタルでの利用
+rental.front.rental_start_date: レンタル開始日
+rental.front.rental_period: レンタル期間
+rental.front.rental_end_date: 返却予定日
+rental.front.rental_price: レンタル料金
+rental.front.add_to_cart: レンタルカートに追加
+rental.front.rental_terms_notes: ※レンタル商品は必ず期限内にご返却ください。期限を過ぎますと延滞料金が発生します。
+
+rental.front.status.reserved: 予約中
+rental.front.status.renting: レンタル中
+rental.front.status.returned: 返却済み
+rental.front.status.overdue: 返却遅延
+rental.front.status.canceled: キャンセル
+
+rental.front.return_date: 返却日
+rental.front.product.not_found: 商品が見つかりません。
+rental.front.product.not_rental: この商品はレンタルできません。
+rental.front.product.not_available: 商品は現在レンタルできません。
+rental.front.form.invalid: 入力内容に誤りがあります。
+rental.front.cart.add_complete: レンタル商品をカートに追加しました。
+rental.front.start_date_must_be_tomorrow: レンタル開始日は明日以降の日付を指定してください。
+
+rental.front.mypage.title: マイページ
+rental.front.mypage.rental_history: レンタル履歴
+rental.front.mypage.no_history: レンタル履歴はありません。
+
+rental.front.add_to_cart_success: 'レンタル商品をカートに追加しました'
+rental.front.add_to_cart_error: 'レンタル商品をカートに追加できませんでした'
+rental.front.invalid_parameter: '入力内容に不備があります'  
+
+rental:
+  # 管理画面用
+  admin:
+    rental:
+      title: レンタル管理
+      sub_title: 現在のレンタル状況
+      tooltip: 現在レンタル中または予約中の商品一覧です。
+      list_title: レンタル中商品一覧
+      id: ID
+      product_name: 商品名
+      order_no: 注文番号
+      customer_name: 顧客名
+      rental_start_date: レンタル開始日
+      rental_end_date: レンタル終了予定日
+      return_date: 返却日
+      status: 状態
+      edit_title: レンタル情報編集
+      edit_sub_title: レンタル情報の詳細編集
+      basic_info: 基本情報
+      to_order: 注文情報を表示
+      rental_info: レンタル情報
+      not_found: レンタル情報が見つかりません
+      save_complete: レンタル情報を保存しました
+      return: 返却処理
+      return_complete: 返却処理が完了しました
+      return_error: 返却処理中にエラーが発生しました
+      cancel: キャンセル
+      cancel_confirm: このレンタルをキャンセルしてもよろしいですか？
+      cancel_complete: キャンセル処理が完了しました
+      cancel_error: キャンセル処理中にエラーが発生しました
+      status_updated: ステータスを更新しました
+      overdue_updated: '%count%件の延滞情報を更新しました'
+      no_data: レンタル中の商品はありません。
+
+    history:
+      title: レンタル履歴
+      sub_title: 過去のレンタル履歴
+      tooltip: 返却済みまたはキャンセルされたレンタル履歴です。
+      list_title: レンタル履歴一覧
+      no_data: レンタル履歴はありません。
+
+    overdue:
+      title: 返却遅延管理
+      sub_title: 返却期限切れの商品
+      tooltip: 返却期限を過ぎているレンタル商品です。
+      list_title: 返却遅延商品一覧
+      overdue_days: 遅延日数
+      days: 日
+      no_data: 返却遅延の商品はありません。
+      updated: '%count%件の遅延情報を更新しました。'
+
+    product:
+      tab_title: レンタル設定
+      rental_setting: レンタル情報
+      rental_flg: レンタル対象
+      rental_flg_tooltip: この商品をレンタル対象にする場合はチェックをしてください
+      rental_price_daily: 日額レンタル料金
+      rental_price_weekly: 週額レンタル料金
+      rental_price_monthly: 月額レンタル料金
+      rental_max_days: 最大レンタル日数
+      greater_than_zero: 0より大きい値を入力してください
+
+    config:
+      title: レンタル設定
+      sub_title: レンタル機能の全般設定
+      basic_info: 基本設定
+      rental_terms: レンタル利用規約
+      auto_approval: 自動承認
+      default_max_days: デフォルト最大レンタル日数
+      default_max_days_note: 特に指定がない商品に適用される最大レンタル日数です。
+      auto_approval_note: 自動承認を有効にすると、注文完了時に自動的にレンタル予約が承認されます。
+      terms_info: 利用規約設定
+      rental_terms_note: レンタル利用時にフロント画面に表示される利用規約です。
+      save_complete: 設定を保存しました。
+      greater_than_zero: 0より大きい値を入力してください。
+
+    order:
+      title: レンタル注文管理
+      sub_title: レンタル注文一覧
+      create_new: 新規登録
+      search_condition: 検索条件
+      reservation_id: 予約番号
+      rental_period: レンタル期間
+      product_name: 商品名
+      customer_name: 顧客名
+      quantity: 数量
+      price: 金額
+      status: ステータス
+      rental_start_date: レンタル開始日
+      rental_end_date: レンタル終了日
+      return_date: 返却日
+      rental_status: レンタル状態
+      end_date_must_be_greater: 終了日は開始日より後である必要があります。
+      status_labels:
+        reserved: 予約中
+        renting: レンタル中
+        returned: 返却済み
+        overdue: 返却遅延
+        canceled: キャンセル済み
+      change_to_renting: レンタル中に変更
+      change_to_returned: 返却済みに変更
+      change_to_overdue: 返却遅延に変更
+      change_to_canceled: キャンセルに変更
+      change_to_reserved: 予約中に戻す
+      delete_confirm_title: レンタル注文の削除
+      delete_confirm_message: レンタル注文「%id%」を削除してもよろしいですか？
+
+    search:
+      reservation_id: 予約番号
+      product_name: 商品名
+      customer_name: 顧客名
+      status: ステータス
+      start_date_from: レンタル開始日（From）
+      start_date_to: レンタル開始日（To）
+
+    common:
+      operation: 操作
+      back: 戻る
+      save: 保存
+      edit: 編集
+
+  # フロント画面用
+  front:
+    rental_title: レンタル予約
+    rental_start_date: レンタル開始日
+    rental_period: レンタル期間
+    rental_end_date: 返却予定日
+    rental_price: レンタル料金
+    add_to_cart: レンタルカートに追加
+    rental_terms_notes: ※レンタル商品は必ず期限内にご返却ください。期限を過ぎますと延滞料金が発生します。
+    return_date: 返却日
+    add_to_cart_success: 'レンタル商品をカートに追加しました'
+    add_to_cart_error: 'レンタル商品をカートに追加できませんでした'
+    invalid_parameter: '入力内容に不備があります'
+
+    options: オプション
+    remarks: 備考
+
+    
+    status:
+      reserved: 予約中
+      renting: レンタル中
+      returned: 返却済み
+      overdue: 返却遅延
+      canceled: キャンセル
+
+    product:
+      not_found: 商品が見つかりません。
+      not_rental: この商品はレンタルできません。
+      not_available: 商品は現在レンタルできません。
+
+    form:
+      invalid: 入力内容に誤りがあります。
+      next: 次へ
+
+    cart:
+      add_complete: レンタル商品をカートに追加しました。
+
+    start_date_must_be_tomorrow: レンタル開始日は明日以降の日付を指定してください。
+
+    mypage:
+      title: マイページ
+      rental_history: レンタル履歴
+      no_history: レンタル履歴はありません。
+
+  # 決済関連のメッセージ
+  payment:
+    title: お支払い方法の選択
+    next: 次へ進む
+    error: 決済処理中にエラーが発生しました。もう一度お試しください。
+    method:
+      label: お支払い方法
+      title: お支払い方法
+      cash: 現金払い（店舗受取時）
+      cod: 代金引換
+    confirm:
+      title: 注文内容の確認
+      button: 注文を確定する
+    complete:
+      title: ご予約ありがとうございました
+      thank_you: レンタルのご予約ありがとうございました
+      message: レンタルのご予約が完了しました。
+      reservation_id: 予約番号は「%id%」です。
+      mypage_message: マイページから予約状況を確認することができます。
+      cash_instruction: ご予約いただいた商品は店舗にてお支払い後にお渡しいたします。予約番号をメモしてお持ちください。
+      cod_instruction: 商品のお届け時に配送業者へ代金をお支払いください。
+      to_mypage: マイページへ
+      to_top: トップページへ
+  
+  payment_confirm:
+    title: 注文内容の確認
+    button: 注文を確定する
+    message: '以下の内容で注文を確定します。よろしければ「注文を確定する」ボタンを押してください。'
+  payment_complete:
+    title: ご注文ありがとうございます
+    message: レンタル予約が完了しました。
+  
+  # 確認画面関連のメッセージ
+  confirm:
+    product_name: 商品名
+    rental_period: レンタル期間
+    quantity: 数量
+    options: 選択オプション
+    remarks: 備考
+    total_amount: 合計金額
+    customer_name: '注文者名'
+    delivery_address: '送り先住所'
+  
+    
+  
+  # オプション関連のメッセージ
+  option:
+    insurance: 保険加入（破損時の補償あり）
+    extension: 延長オプション（最大1週間延長可能）
+    delivery: 配送オプション（配送料込み）
+  
+  # 共通メッセージ
+  common:
+    required: 必須
+    back: 戻る
+    back_to_top: トップページへ戻る
+

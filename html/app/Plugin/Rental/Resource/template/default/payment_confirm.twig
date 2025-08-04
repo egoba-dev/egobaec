@@ -1,0 +1,136 @@
+{% extends '@Rental/default/rental_payment_frame.twig' %}
+
+{% set body_class = 'rental_payment_confirm' %}
+{% set title = '注文内容の確認' %}
+
+{% block javascript %}
+<script>
+    $(function() {
+        // フォーム送信時の確認
+        $('form').on('submit', function() {
+            return confirm('注文を確定してもよろしいですか？');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.payment_confirm.title'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <p>{{ 'rental.payment_confirm.message'|trans }}</p>
+                
+                <!-- レンタル情報のサマリー -->
+                <div class="ec-borderedDefs">
+                    {# 注文主情報の表示 #}
+                    {% if app.user %}
+                        <dl>
+                            <dt>{{ 'rental.confirm.customer_name'|trans }}</dt>
+                            <dd>{{ app.user.name01 }} {{ app.user.name02 }}</dd>
+                        </dl>
+                        
+                        <dl>
+                            <dt>{{ 'rental.confirm.delivery_address'|trans }}</dt>
+                            <dd>
+                                〒{{ app.user.postal_code }}<br>
+                                {{ app.user.pref.name }}{{ app.user.addr01 }}{{ app.user.addr02 }}
+                            </dd>
+                        </dl>
+                    {% elseif rental.name01 is defined %}
+                        {# セッションデータから表示 #}
+                        <dl>
+                            <dt>{{ 'rental.confirm.customer_name'|trans }}</dt>
+                            <dd>{{ rental.name01 }} {{ rental.name02 }}</dd>
+                        </dl>
+                        
+                        <dl>
+                            <dt>{{ 'rental.confirm.delivery_address'|trans }}</dt>
+                            <dd>
+                                〒{{ rental.postal_code }}<br>
+                                {{ rental.pref }}{{ rental.addr01 }}{{ rental.addr02 }}
+                            </dd>
+                        </dl>
+                    {% endif %}
+                    
+                    <dl>
+                        <dt>{{ 'rental.confirm.product_name'|trans }}</dt>
+                        <dd>{{ Product.name }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.rental_period'|trans }}</dt>
+                        <dd>{{ rental.start_date }} 〜 {{ rental.end_date }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.quantity'|trans }}</dt>
+                        <dd>{{ rental.quantity }}</dd>
+                    </dl>
+
+                    {% if rental.options is defined and rental.options|length > 0 %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.options'|trans }}</dt>
+                        <dd>
+                            <ul>
+                                {% for option in rental.options %}
+                                    {% if option == 'insurance' %}
+                                        <li>{{ 'rental.option.insurance'|trans }}</li>
+                                    {% elseif option == 'extension' %}
+                                        <li>{{ 'rental.option.extension'|trans }}</li>
+                                    {% elseif option == 'delivery' %}
+                                        <li>{{ 'rental.option.delivery'|trans }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if rental.remarks is defined and rental.remarks is not empty %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.remarks'|trans }}</dt>
+                        <dd>{{ rental.remarks|nl2br }}</dd>
+                    </dl>
+                    {% endif %}
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.total_amount'|trans }}</dt>
+                        <dd>{{ rental.price|price }}</dd>
+                    </dl>
+                    
+                    <dl>
+                        <dt>支払方法</dt>
+                        <dd>{{ payment_method }}</dd>
+                    </dl>
+                </div>
+
+                <form method="post" action="{{ url('rental_payment_confirm') }}">
+                    {# CSRFトークンを追加 #}
+                    <input type="hidden" name="_token" value="{{ csrf_token('') }}">
+                    
+                    <div class="ec-registerRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button type="submit" class="ec-blockBtn--action">{{ 'rental.payment_confirm.button'|trans }}</button>
+                                <a href="{{ url('rental_payment') }}" class="ec-blockBtn--cancel">{{ 'common.back'|trans }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                {# payment_confirm.twig の適当な場所に追加 #}
+                <div class="ec-off4Grid">
+                    <div class="ec-off4Grid__cell">
+                        <a href="{{ url('rental_payment_complete', {'id': 1}) }}" class="ec-blockBtn--action">テスト：直接完了画面へ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

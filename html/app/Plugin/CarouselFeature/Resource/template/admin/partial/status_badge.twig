@@ -1,0 +1,22 @@
+{#
+    ステータスバッジ表示部品
+    使用例: {% include '@CarouselFeature/admin/partial/status_badge.twig' with {status: carousel.status} %}
+#}
+
+{% if status == 'published' %}
+    <span class="badge badge-success status-badge status-published">
+        <i class="fa fa-eye"></i> 公開
+    </span>
+{% elseif status == 'draft' %}
+    <span class="badge badge-warning status-badge status-draft">
+        <i class="fa fa-edit"></i> 下書き
+    </span>
+{% elseif status == 'inactive' %}
+    <span class="badge badge-secondary status-badge status-inactive">
+        <i class="fa fa-eye-slash"></i> 非公開
+    </span>
+{% else %}
+    <span class="badge badge-light status-badge">
+        <i class="fa fa-question"></i> 不明
+    </span>
+{% endif %}

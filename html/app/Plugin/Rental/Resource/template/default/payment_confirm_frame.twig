@@ -1,0 +1,84 @@
+{% extends '@Rental/default/payment_confirm_frame.twig' %}
+
+{% set body_class = 'rental_payment_confirm' %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>注文内容の確認</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <p>以下の内容で注文を確定します。よろしければ「注文を確定する」ボタンを押してください。</p>
+                
+                <!-- レンタル情報のサマリー -->
+                <div class="ec-borderedDefs">
+                    <dl>
+                        <dt>商品名</dt>
+                        <dd>{{ Product.name }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>レンタル期間</dt>
+                        <dd>{{ rental.start_date }} 〜 {{ rental.end_date }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>数量</dt>
+                        <dd>{{ rental.quantity }}</dd>
+                    </dl>
+
+                    {% if rental.options is defined and rental.options|length > 0 %}
+                    <dl>
+                        <dt>選択オプション</dt>
+                        <dd>
+                            <ul>
+                                {% for option in rental.options %}
+                                    {% if option == 'insurance' %}
+                                        <li>保険オプション（保険料込み）</li>
+                                    {% elseif option == 'extension' %}
+                                        <li>延長オプション</li>
+                                    {% elseif option == 'delivery' %}
+                                        <li>配送オプション（配送料込み）</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if rental.remarks is defined and rental.remarks is not empty %}
+                    <dl>
+                        <dt>備考</dt>
+                        <dd>{{ rental.remarks|nl2br }}</dd>
+                    </dl>
+                    {% endif %}
+
+                    <dl>
+                        <dt>合計金額</dt>
+                        <dd>{{ rental.price|price }}</dd>
+                    </dl>
+                    
+                    <dl>
+                        <dt>支払方法</dt>
+                        <dd>{{ payment_method }}</dd>
+                    </dl>
+                </div>
+
+                <form method="post" action="{{ url('rental_payment_confirm') }}">
+                    <div class="ec-registerRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button type="submit" class="ec-blockBtn--action">注文を確定する</button>
+                                <a href="{{ url('rental_payment') }}" class="ec-blockBtn--cancel">戻る</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

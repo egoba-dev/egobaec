@@ -1,0 +1,31 @@
+{# EC-CUBEコアのmeta.twigをオーバーライド #}
+{% if app.request.get('_route') matches '/^(mypage_rental|mypage_rental_history)/' %}
+    {# レンタル関連のルートの場合は独自のメタ情報を設定 #}
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="{{ BaseInfo.shop_name|default('EC-CUBE') }}"/>
+    <meta name="description" content="レンタル履歴ページです。">
+    <meta property="og:description" content="レンタル履歴ページです。">
+{% elseif Product is defined and Product.id is defined %}
+    {# 商品ページ用 #}
+    {% set meta_og_type = 'product' %}
+    {% set meta_canonical = url('product_detail', {'id': Product.id}) %}
+    <meta property="og:type" content="{{ meta_og_type }}"/>
+    <meta property="og:site_name" content="{{ BaseInfo.shop_name|default('EC-CUBE') }}"/>
+{% elseif app.request.get('_route') == 'homepage' %}
+    {% set meta_og_type = 'website' %}
+    {% set meta_canonical = url('homepage') %}
+    <meta property="og:type" content="{{ meta_og_type }}"/>
+    <meta property="og:site_name" content="{{ BaseInfo.shop_name|default('EC-CUBE') }}"/>
+{% elseif Page is defined and Page.edit_type == 0 and Page.url is defined and Page.url is not empty %}
+    {# URLが空でない場合のみURL生成 #}
+    {% set meta_canonical = url(eccube_config.eccube_user_data_route, {'route': Page.url}) %}
+    <meta property="og:type" content="{{ meta_og_type|default('article') }}"/>
+    <meta property="og:site_name" content="{{ BaseInfo.shop_name|default('EC-CUBE') }}"/>
+{% else %}
+    <meta property="og:type" content="{{ meta_og_type|default('article') }}"/>
+    <meta property="og:site_name" content="{{ BaseInfo.shop_name|default('EC-CUBE') }}"/>
+{% endif %}
+
+{% set meta_description = meta_description | default(Page.description) %}
+<meta name="description" content="{{ meta_description|default('レンタルサービスをご利用いただけます。') }}">
+<meta property="og:description" content="{{ meta_description|default('レンタルサービスをご利用いただけます。') }}">

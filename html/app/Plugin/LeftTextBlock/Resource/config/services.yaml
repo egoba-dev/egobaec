@@ -1,0 +1,34 @@
+services:
+  # コントローラー
+  Plugin\LeftTextBlock\Controller\Admin\LeftTextBlockController:
+    autowire: true
+    autoconfigure: true
+    tags: [controller.service_arguments]
+
+  # ブロックコントローラー
+  Plugin\LeftTextBlock\Controller\BlockController:
+    autowire: true
+    autoconfigure: true
+    arguments:
+      $twig: '@twig'
+    tags: [controller.service_arguments]
+    calls:
+      - method: setContainer
+        arguments: ['@service_container']
+
+  # リポジトリ
+  Plugin\LeftTextBlock\Repository\LeftTextBlockRepository:
+    autowire: true
+    autoconfigure: true
+    tags: [doctrine.repository_service]
+
+  # サービス
+  Plugin\LeftTextBlock\Service\LeftTextBlockService:
+    autowire: true
+    autoconfigure: true
+
+  # フォーム
+  Plugin\LeftTextBlock\Form\Type\Admin\LeftTextBlockType:
+    autowire: true
+    autoconfigure: true
+    tags: [form.type]

@@ -1,0 +1,3 @@
+<?php //Plugin%255CCarouselFeature%255CController%255CBlock%255CCarouselBlockController
+
+return [PHP_INT_MAX, []];

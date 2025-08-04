@@ -1,0 +1,18 @@
+{# 商品詳細ページにレンタルフォームを表示 #}
+{# 商品詳細ページにレンタルフォームを表示するためのカスタマイズファイル。
+このファイルは既存のtemplateを拡張する役割を果たします。 #}
+{% extends 'Product/detail.twig' %}
+
+{% block javascript %}
+    {{ parent() }}
+    {# 必要なJavaScriptがあれば追加 #}
+{% endblock %}
+
+{% block main %}
+    {{ parent() }}
+    
+    {# RentalProductが設定されていれば表示 #}
+    {% if RentalProduct is defined %}
+        {% include '@Rental/front/rental_form.twig' with {'RentalProduct': RentalProduct, 'form': rentalForm} %}
+    {% endif %}
+{% endblock %}

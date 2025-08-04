@@ -1,0 +1,41 @@
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'rental_complete' %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.payment.complete.title'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <div class="ec-reportHeading">
+                    <h2>{{ 'rental.payment.complete.thank_you'|trans }}</h2>
+                </div>
+                <p class="ec-reportDescription">
+                    {{ 'rental.payment.complete.message'|trans }}<br>
+                    {{ 'rental.payment.complete.reservation_id'|trans({'%id%': order_id}) }}<br>
+                    {{ 'rental.payment.complete.mypage_message'|trans }}
+                </p>
+
+                <div class="ec-reportDescription">
+                    <p>
+                        <strong>{{ 'rental.confirm.product_name'|trans }}:</strong> {{ rental.product_name }}<br>
+                        <strong>{{ 'rental.confirm.rental_period'|trans }}:</strong> {{ rental.start_date }} 〜 {{ rental.end_date }}<br>
+                        <strong>{{ 'rental.confirm.total_amount'|trans }}:</strong> {{ rental.price|price }}
+                    </p>
+                </div>
+
+                <div class="ec-off4Grid">
+                    <div class="ec-off4Grid__cell">
+                        <a href="{{ url('mypage_rental_history') }}" class="ec-blockBtn--action">{{ 'rental.payment.complete.to_mypage'|trans }}</a>
+                        <a href="{{ url('homepage') }}" class="ec-blockBtn--cancel">{{ 'rental.payment.complete.to_top'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% set meta_og_type = 'product' %}
+{% set meta_description = 'レンタル予約内容の確認ページです。' %}
+
+<meta name="description" content="{{ meta_description }}">
+<meta property="og:type" content="{{ meta_og_type }}"/>
+<meta property="og:title" content="{{ 'rental.confirm.title'|trans }}"/>
+<meta property="og:description" content="{{ meta_description }}"/>
+<meta property="og:url" content="{{ url('rental_confirm') }}"/>
+{% if Product.MainListImage %}
+<meta property="og:image" content="{{ absolute_url(asset(Product.MainListImage)) }}"/>
+{% endif %}

@@ -1,0 +1,39 @@
+# Twigの追加設定
+parameters:
+    category_product_block.template_dir: '%kernel.project_dir%/app/Plugin/CategoryProductBlock/Resource/template'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Plugin\CategoryProductBlock\:
+        resource: '../../*'
+        exclude: '../../{Entity,Tests}'
+
+    Plugin\CategoryProductBlock\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    Plugin\CategoryProductBlock\TwigExtension\CategoryProductExtension:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $configRepository: '@Plugin\CategoryProductBlock\Repository\ConfigRepository'
+            $requestStack: '@request_stack'
+        tags: ['twig.extension']
+
+    Plugin\CategoryProductBlock\Repository\ConfigRepository:
+        arguments:
+            $registry: '@doctrine'
+        tags: ['doctrine.repository_service']
+
+    Plugin\CategoryProductBlock\Form\Type\Admin\ConfigType:
+        tags: ['form.type']
+
+    # TwigLoaderListenerは別サービスとして定義
+    Plugin\CategoryProductBlock\EventListener\TwigLoaderListener:
+        arguments:
+            $twigLoader: '@twig.loader.native_filesystem'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 255 }

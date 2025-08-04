@@ -1,0 +1,15 @@
+{
+    "name": "ec-cube/left-text-block",
+    "description": "段落テキストブロックプラグイン",
+    "version": "1.0.0",
+    "type": "eccube-plugin",
+    "require": {
+        "ec-cube/plugin-installer": "~2.0"
+    },
+    "extra": {
+        "code": "LeftTextBlock",
+        "name": "段落テキストブロック",
+        "description": "段落テキストブロックを管理画面から設定できるプラグインです。",
+        "compatibility": "^5.0"
+    }
+}

@@ -1,0 +1,103 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['content', 'plugin_left_text_block'] %}
+
+{% block title %}左寄せテキストブロック管理{% endblock %}
+{% block sub_title %}左寄せテキストブロック{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">左寄せテキストブロック一覧</span>
+                            </div>
+                            <div class="col-4 text-end">
+                                <a class="btn btn-primary btn-sm" href="{{ path('plugin_left_text_block_admin_new') }}">
+                                    <i class="fa fa-plus fa-lg mr-1"></i>新規作成
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if LeftTextBlocks %}
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>タイトル</th>
+                                        <th>フォントサイズ</th>
+                                        <th>表示順</th>
+                                        <th>表示</th>
+                                        <th>作成日</th>
+                                        <th>更新日</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for LeftTextBlock in LeftTextBlocks %}
+                                        <tr>
+                                            <td>{{ LeftTextBlock.id }}</td>
+                                            <td>{{ LeftTextBlock.title }}</td>
+                                            <td>{{ LeftTextBlock.fontSize }}px</td>
+                                            <td>{{ LeftTextBlock.sortNo }}</td>
+                                            <td>
+                                                {% if LeftTextBlock.visible %}
+                                                    <span class="badge badge-success">表示</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">非表示</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ LeftTextBlock.createDate|date('Y-m-d H:i') }}</td>
+<td>{{ LeftTextBlock.updateDate|date('Y-m-d H:i') }}</td>
+                                            <td class="table-actions">
+                                                <a href="{{ path('plugin_left_text_block_admin_edit', {id: LeftTextBlock.id}) }}" class="btn btn-sm btn-outline-primary">編集</a>
+                                                
+                                                <form method="POST" action="{{ path('plugin_left_text_block_admin_visible', {id: LeftTextBlock.id}) }}" style="display: inline;" onsubmit="return confirm('表示状態を変更してもよろしいですか？');">
+                                                    <input type="hidden" name="_method" value="PUT">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('token') }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-info">
+                                                        {% if LeftTextBlock.visible %}非表示{% else %}表示{% endif %}
+                                                    </button>
+                                                </form>
+                                                
+                                                <form method="POST" action="{{ path('plugin_left_text_block_admin_delete', {id: LeftTextBlock.id}) }}" style="display: inline;" onsubmit="return confirm('削除してもよろしいですか？');">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('token') }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <p class="text-muted">データがありません。</p>
+                                <a href="{{ path('plugin_left_text_block_admin_new') }}" class="btn btn-primary">
+                                    <i class="fa fa-plus mr-1"></i>最初のブロックを作成する
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .table-actions {
+            white-space: nowrap;
+        }
+        .table-actions form {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .table-actions .btn {
+            margin-right: 3px;
+        }
+    </style>
+{% endblock %}

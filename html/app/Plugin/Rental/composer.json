@@ -1,0 +1,17 @@
+{
+  "name": "ec-cube/rental",
+  "description": "EC-CUBE用レンタル管理プラグイン",
+  "version": "1.0.0",
+  "type": "eccube-plugin",
+  "require": {
+      "ec-cube/plugin-installer": "^2.0"
+  },
+  "extra": {
+      "code": "Rental"
+  },
+  "config": {
+      "allow-plugins": {
+          "ec-cube/plugin-installer": true
+      }
+  }
+}

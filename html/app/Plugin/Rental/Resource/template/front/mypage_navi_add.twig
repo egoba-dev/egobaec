@@ -1,0 +1,4 @@
+{# レンタル注文の履歴ページへのリンク #}
+<li class="ec-navlistRole__item {% if mypageno|default('') == 'rental_history' %}active{% endif %}">
+    <a href="{{ url('mypage_rental_history') }}">レンタル履歴</a>
+</li>

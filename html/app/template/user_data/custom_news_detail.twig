@@ -1,0 +1,17 @@
+{% extends 'default_frame.twig' %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block main %}
+<article class="news-detail">
+    <header>
+        <h1>{{ news.title }}</h1>
+        <time datetime="{{ news.publishDate|date('c') }}">
+            {{ news.publishDate|date('Y-m-d H:i') }}
+        </time>
+    </header>
+    <section class="news-content">
+        {{ news.content|raw }}
+    </section>
+</article>
+{% endblock %}

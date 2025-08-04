@@ -1,0 +1,8 @@
+{# meta.twig のインクルード部分を条件分岐 #}
+{% if app.request.get('_route') matches '/^(mypage_rental|mypage_rental_history)/' %}
+    {# レンタル関連ページの場合はブロックを使用 #}
+    {{ block('meta') }}
+{% else %}
+    {# それ以外の場合は通常のインクルード #}
+    {% include 'meta.twig' %}
+{% endif %}

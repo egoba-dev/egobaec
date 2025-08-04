@@ -1,0 +1,10 @@
+# 管理画面用のルーティング
+category_product_block_admin:
+  resource: ../../Controller/Admin/
+  type: annotation
+  prefix: /%eccube_admin_route%
+
+# フロントエンド用のルーティング（画像配信）
+category_product_block_frontend:
+  resource: ../../Controller/ProductImageController.php
+  type: annotation

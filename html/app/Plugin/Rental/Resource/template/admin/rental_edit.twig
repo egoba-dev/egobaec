@@ -1,0 +1,195 @@
+{# admin/rental_edit.twig #}
+{# レンタル注文の編集画面のテンプレート #}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['rental', 'rental_active'] %}
+
+{% block title %}{{ 'rental.admin.rental.edit_title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'rental.admin.rental.edit_sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_layout.html.twig' %}
+
+{% block main %}
+    {# エラーメッセージの表示 #}
+    {% include '@admin/alert.twig' %}
+
+    <form method="post" action="{{ url('admin_rental_edit', {'id': RentalOrder.id}) }}">
+        {{ form_widget(form._token) }}
+        
+        {# フォーム全体のエラー表示 #}
+        {{ form_errors(form) }}
+        
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block">
+                                        <span class="card-title">{{ 'rental.admin.rental.basic_info'|trans }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-right">
+                                    {% if RentalOrder.Order is not null %}
+                                        <a href="{{ url('admin_order_edit', {'id': RentalOrder.Order.id}) }}" class="btn btn-ec-regular">{{ 'rental.admin.rental.to_order'|trans }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {# 基本情報の表示 #}
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ 'rental.admin.rental.order_no'|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    {% if RentalOrder.Order is not null %}
+                                        <p>{{ RentalOrder.Order.order_no }}</p>
+                                    {% else %}
+                                        <p>-</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ 'rental.admin.rental.customer_name'|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    {% if RentalOrder.name01 is not null %}
+                                        <p>{{ RentalOrder.name01 }} {{ RentalOrder.name02 }}</p>
+                                    {% elseif RentalOrder.Order is not null %}
+                                        <p>{{ RentalOrder.Order.name01 }} {{ RentalOrder.Order.name02 }}</p>
+                                    {% else %}
+                                        <p>-</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ 'rental.admin.rental.product_name'|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    {% if RentalOrder.ProductClass is not null and RentalOrder.ProductClass.Product is not null %}
+                                        <p>{{ RentalOrder.ProductClass.Product.name }}</p>
+                                    {% else %}
+                                        <p>-</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="d-inline-block">
+                                <span class="card-title">{{ 'rental.admin.rental.rental_info'|trans }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ form.rental_start_date.vars.label|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group" id="rental_start_date" data-target-input="nearest">
+                                        {{ form_widget(form.rental_start_date) }}
+                                        <div class="input-group-append" data-target="#rental_start_date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                    {{ form_errors(form.rental_start_date) }}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ form.rental_end_date.vars.label|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group" id="rental_end_date" data-target-input="nearest">
+                                        {{ form_widget(form.rental_end_date) }}
+                                        <div class="input-group-append" data-target="#rental_end_date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                    {{ form_errors(form.rental_end_date) }}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-3">
+                                    <span>{{ form.rental_status_id.vars.label|trans }}</span>
+                                </div>
+                                <div class="col">
+                                    {{ form_widget(form.rental_status_id) }}
+                                    {{ form_errors(form.rental_status_id) }}
+                                </div>
+                            </div>
+                            {% if form.return_date is defined %}
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <span>{{ form.return_date.vars.label|trans }}</span>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group" id="return_date" data-target-input="nearest">
+                                            {{ form_widget(form.return_date) }}
+                                            <div class="input-group-append" data-target="#return_date" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        {{ form_errors(form.return_date) }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('admin_rental_index') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'rental.admin.common.back'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" type="submit">{{ 'rental.admin.common.save'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function() {
+    // DateTimePicker の初期化
+    $('#rental_start_date').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        locale: 'ja'
+    });
+    
+    $('#rental_end_date').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        locale: 'ja'
+    });
+    
+    {% if form.return_date is defined %}
+    $('#return_date').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm',
+        locale: 'ja'
+    });
+    {% endif %}
+});
+</script>
+{% endblock %}

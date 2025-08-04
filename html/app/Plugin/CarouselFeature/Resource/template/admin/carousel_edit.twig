@@ -1,0 +1,514 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['content', 'carousel_feature'] %}
+
+{% block title %}カルーセル特集 - 編集{% endblock %}
+{% block sub_title %}記事編集 - {{ carousel.title }}{% endblock %}
+
+{% block stylesheet %}
+<style>
+/* 既存画像表示用スタイル */
+.existing-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.image-item {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f9f9f9;
+    width: 200px;
+}
+
+.image-preview {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.image-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.delete-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-image-btn:hover {
+    background: rgba(220, 53, 69, 1);
+}
+
+/* 共通スタイル */
+.image-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+}
+
+.image-upload-area:hover,
+.image-upload-area.dragover {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.link-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.link-text-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.rich-editor {
+    min-height: 200px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="c-contentsArea__cols">
+    <div class="c-contentsArea__primaryCol">
+        <div class="c-primaryCol">
+            
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'carouselForm'}}) }}
+            
+            {# 基本情報 #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">基本情報</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ form_row(form.title) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.status) }}
+                        </div>
+                    </div>
+                    
+                    {{ form_row(form.content, {
+                        'attr': {
+                            'class': 'form-control rich-editor',
+                            'data-editor': 'richtext'
+                        }
+                    }) }}
+                </div>
+            </div>
+
+           {# 既存画像の表示 - 直接パスを使用 #}
+            {% if carouselImages is not empty %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">登録済み画像</span>
+                    <small class="text-muted ml-2">({{ carouselImages|length }}枚)</small>
+                </div>
+                <div class="card-body">
+                    <div class="existing-images">
+                        {% for image in carouselImages %}
+                        <div class="image-item" data-image-id="{{ image.id }}" data-delete-url="{{ path('admin_carousel_feature_image_delete', {id: image.id}) }}">
+                            <button type="button" class="delete-image-btn" onclick="deleteImageWithUrl(this)">×</button>
+                            
+                            <div class="image-container" style="position: relative;">
+                                {# 複数の画像URL形式を試行 #}
+                                {% if image.fileName %}
+                                    {# 方法1: 直接パス #}
+                                    <img src="{{ image.directImageUrl }}" 
+                                         alt="{{ image.originalName|default('カルーセル画像') }}" 
+                                         class="image-preview"
+                                         onload="console.log('Image loaded with direct URL: {{ image.fileName }}'); this.nextElementSibling.style.display='none';"
+                                         onerror="console.log('Direct URL failed, trying asset: {{ image.fileName }}'); this.src='{{ asset(image.imagePath, 'save_image') }}'; this.onerror=function(){console.log('Asset also failed: {{ image.fileName }}'); this.style.display='none'; this.parentNode.nextElementSibling.style.display='block';};">
+                                {% endif %}
+                                
+                                <div class="image-error" style="display: none; width: 180px; height: 120px; background: #f8f9fa; border: 2px dashed #dee2e6; padding: 10px; text-align: center; font-size: 11px; color: #666;">
+                                    <i class="fa fa-exclamation-triangle text-warning"></i><br>
+                                    画像読み込みエラー<br>
+                                    <strong>{{ image.fileName }}</strong><br>
+                                    <button onclick="retryImageLoad(this)" class="btn btn-xs btn-info mt-1">再試行</button>
+                                </div>
+                            </div>
+                            
+                            <div class="image-info">
+                                <div><strong>{{ image.originalName|default('Unknown') }}</strong></div>
+                                <div>{{ image.fileName }}</div>
+                                <div>{{ image.formattedFileSize|default('N/A') }}</div>
+                                
+                                {# リンクテスト - 複数のURLパターンをテスト #}
+                                <div class="mt-2">
+                                    {% if image.fileName %}
+                                        <a href="{{ image.directImageUrl }}" target="_blank" class="btn btn-xs btn-outline-primary">
+                                            <i class="fa fa-external-link"></i> 直接表示
+                                        </a>
+                                        <a href="{{ asset(image.imagePath, 'save_image') }}" target="_blank" class="btn btn-xs btn-outline-secondary">
+                                            <i class="fa fa-external-link"></i> Asset表示
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {# デバッグ情報 #}
+                    {% if app.debug and carouselImages|length > 0 %}
+                    <div class="mt-3 p-2 bg-light border rounded">
+                        <small class="text-muted">
+                            <strong>デバッグ情報:</strong><br>
+                            {% set firstImage = carouselImages|first %}
+                            File Name: {{ firstImage.fileName }}<br>
+                            Image Path: {{ firstImage.imagePath }}<br>
+                            Direct URL: {{ firstImage.directImageUrl }}<br>
+                            Asset URL: {{ asset(firstImage.imagePath, 'save_image') }}<br>
+                            Full Path: {{ firstImage.fullPath }}<br>
+                            File Exists: {{ firstImage.isValid ? 'Yes' : 'No' }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {# 画像追加アップロード #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">画像追加</span>
+                    <small class="text-muted ml-2">※追加で画像をアップロードできます</small>
+                </div>
+                <div class="card-body">
+                    <div class="image-upload-area">
+                        {{ form_row(form.images, {
+                            'attr': {
+                                'class': 'form-control-file image-upload-input',
+                                'accept': 'image/*',
+                                'multiple': true
+                            }
+                        }) }}
+                        
+                        <div class="upload-dropzone" id="uploadDropzone">
+                            <div class="upload-message">
+                                <i class="fa fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p>ここに画像をドラッグ&ドロップするか、クリックしてファイルを選択してください</p>
+                                <small class="text-muted">
+                                    対応形式: JPEG, PNG, GIF, WebP (最大10MB)
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="image-preview-container" id="imagePreview">
+                            <!-- 新規画像プレビューがここに表示される -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# リンク設定 #}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <span class="card-title">リンク設定</span>
+                    <small class="text-muted ml-2">※カルーセル画像をクリックした時の遷移先を設定します</small>
+                </div>
+                <div class="card-body">
+                    {{ form_row(form.link_type, {
+                        'attr': {'class': 'link-type-selector'}
+                    }) }}
+                    
+                    <div class="link-fields mt-3">
+                        <div class="link-field" data-type="product" style="display: none;">
+                            {{ form_row(form.Product, {
+                                'attr': {
+                                    'class': 'form-control product-selector',
+                                    'data-placeholder': '商品を検索...'
+                                }
+                            }) }}
+                            {% if carousel.product %}
+                                <div class="selected-product-info mt-2">
+                                    <div class="alert alert-info">
+                                        <strong>現在選択中:</strong> {{ carousel.product.name }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="link-field" data-type="url" style="display: none;">
+                            {{ form_row(form.link_url, {
+                                'attr': {
+                                    'placeholder': 'https://example.com または /products/detail/123'
+                                }
+                            }) }}
+                            <small class="form-text text-muted">
+                                <strong>例:</strong><br>
+                                • 外部サイト: https://www.google.com<br>
+                                • 商品詳細: /products/detail/123<br>
+                                • カテゴリ: /products/list?category_id=1<br>
+                                • 固定ページ: /help/about
+                            </small>
+                        </div>
+                        
+                        <div class="link-text-field" style="display: none;">
+                            {{ form_row(form.link_text, {
+                                'attr': {
+                                    'placeholder': 'ボタンのテキスト（空の場合は自動生成）'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    {# リンクプレビュー #}
+                    {% if carousel.linkUrl %}
+                        <div class="link-preview mt-3" id="linkPreview">
+                            <strong>リンクプレビュー:</strong>
+                            <a href="{{ carousel.linkUrl }}" target="_blank" id="linkPreviewUrl">
+                                {{ carousel.linkText ?: carousel.linkUrl }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# アクションボタン #}
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{{ url('admin_carousel_feature_list') }}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> 一覧に戻る
+                            </a>
+                            <button type="button" class="btn btn-info" id="previewBtn">
+                                <i class="fa fa-eye"></i> プレビュー
+                            </button>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button type="submit" name="mode" value="draft" class="btn btn-warning">
+                                <i class="fa fa-save"></i> 下書き保存
+                            </button>
+                            <button type="submit" name="mode" value="publish" class="btn btn-success">
+                                <i class="fa fa-eye"></i> 保存して公開
+                            </button>
+                            <button type="button" class="btn btn-info" id="duplicateBtn" data-id="{{ carousel.id }}">
+                                <i class="fa fa-copy"></i> 複製
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{# 隠しフィールド #}
+<input type="hidden" id="carousel_id" value="{{ carousel.id }}">
+<input type="hidden" id="csrf_token" value="{{ csrf_token('authenticate') }}">
+<input type="hidden" id="admin_route_prefix" value="{{ eccube_config.eccube_admin_route }}">
+{% endblock %}
+
+{% block javascript %}
+<script>
+// 画像削除機能
+function deleteImageWithUrl(button) {
+    if (!confirm('この画像を削除しますか？')) {
+        return;
+    }
+    
+    const imageItem = button.closest('.image-item');
+    const deleteUrl = imageItem.dataset.deleteUrl;
+    
+    fetch(deleteUrl, {
+        method: 'DELETE',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.getElementById('csrf_token').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            imageItem.remove();
+            alert('画像を削除しました。');
+            
+            // 画像がなくなった場合の処理
+            const existingImages = document.querySelector('.existing-images');
+            if (existingImages && existingImages.children.length === 0) {
+                existingImages.closest('.card').style.display = 'none';
+            }
+        } else {
+            alert('画像の削除に失敗しました: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('画像の削除に失敗しました。');
+    });
+}
+
+// リンクタイプ選択の制御
+document.addEventListener('DOMContentLoaded', function() {
+    const linkTypeSelect = document.querySelector('select[name*="link_type"]');
+    if (linkTypeSelect) {
+        const linkFields = document.querySelectorAll('.link-field');
+        const linkTextField = document.querySelector('.link-text-field');
+        
+        function updateLinkFields() {
+            const selectedType = linkTypeSelect.value;
+            
+            // 全てのフィールドを非表示
+            linkFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            if (linkTextField) linkTextField.style.display = 'none';
+            
+            // 選択されたタイプに応じてフィールドを表示
+            switch(selectedType) {
+                case 'product':
+                    const productField = document.querySelector('.link-field[data-type="product"]');
+                    if (productField) productField.style.display = 'block';
+                    if (linkTextField) linkTextField.style.display = 'block';
+                    break;
+                    
+                case 'external':
+                case 'internal':
+                    const urlField = document.querySelector('.link-field[data-type="url"]');
+                    if (urlField) urlField.style.display = 'block';
+                    if (linkTextField) linkTextField.style.display = 'block';
+                    break;
+            }
+        }
+        
+        // 初期表示
+        updateLinkFields();
+        
+        // 変更時の処理
+        linkTypeSelect.addEventListener('change', updateLinkFields);
+    }
+    
+    // 画像アップロード機能
+    const uploadDropzone = document.getElementById('uploadDropzone');
+    const fileInput = document.querySelector('input[type="file"][accept*="image"]');
+    
+    if (uploadDropzone && fileInput) {
+        uploadDropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        uploadDropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.add('dragover');
+        });
+        
+        uploadDropzone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+        });
+        
+        uploadDropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadDropzone.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+    }
+    
+    // フォーム送信時のバリデーション
+    const form = document.getElementById('carouselForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const title = form.querySelector('input[name*="title"]');
+            if (title && !title.value.trim()) {
+                alert('タイトルを入力してください。');
+                e.preventDefault();
+                title.focus();
+                return false;
+            }
+        });
+    }
+});
+
+
+// 画像読み込み再試行機能
+function retryImageLoad(button) {
+    const imageContainer = button.closest('.image-item');
+    const imageElement = imageContainer.querySelector('.image-preview');
+    const errorDiv = button.closest('.image-error');
+    
+    if (imageElement) {
+        // 元の画像を表示し、エラーを非表示
+        imageElement.style.display = 'block';
+        errorDiv.style.display = 'none';
+        
+        // 画像のsrcを再設定（キャッシュクリア用にタイムスタンプ追加）
+        const originalSrc = imageElement.src.split('?')[0];
+        imageElement.src = originalSrc + '?t=' + new Date().getTime();
+    }
+}
+
+// 画像削除機能
+function deleteImageWithUrl(button) {
+    if (!confirm('この画像を削除しますか？')) {
+        return;
+    }
+    
+    const imageItem = button.closest('.image-item');
+    const deleteUrl = imageItem.dataset.deleteUrl;
+    
+    fetch(deleteUrl, {
+        method: 'DELETE',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.getElementById('csrf_token').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            imageItem.remove();
+            alert('画像を削除しました。');
+            
+            // 画像がなくなった場合の処理
+            const existingImages = document.querySelector('.existing-images');
+            if (existingImages && existingImages.children.length === 0) {
+                existingImages.closest('.card').style.display = 'none';
+            }
+        } else {
+            alert('画像の削除に失敗しました: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('画像の削除に失敗しました。');
+    });
+}
+
+</script>
+{% endblock %}

@@ -1,0 +1,558 @@
+/* ==========================================================================
+   CarouselFeature - 管理画面用CSS
+   ========================================================================== */
+
+/* 基本設定 */
+.carousel-admin {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 統計情報カード */
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* テーブル関連 */
+.carousel-thumbnail {
+    width: 50px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.no-image-placeholder {
+    width: 50px;
+    height: 30px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.carousel-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.carousel-title a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.carousel-title a:hover {
+    text-decoration: underline;
+}
+
+/* ソートハンドル */
+.sort-handle {
+    cursor: move;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sort-handle:hover {
+    color: #495057;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background: #e3f2fd;
+}
+
+.sortable-chosen {
+    background: #fff3cd;
+}
+
+/* ステータスバッジ */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.status-published {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.status-draft {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 画像アップロード エリア */
+.image-upload-area {
+    margin-bottom: 1rem;
+}
+
+.upload-dropzone {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.upload-dropzone.dragover {
+    transform: scale(1.02);
+}
+
+.upload-message {
+    color: #6c757d;
+}
+
+.upload-message p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.upload-message small {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* 画像プレビュー */
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 150px;
+    height: 100px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-preview-item:hover .image-preview-overlay {
+    opacity: 1;
+}
+
+.image-preview-overlay .btn {
+    margin: 0 5px;
+}
+
+/* 既存画像管理 */
+.existing-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.existing-image-item {
+    position: relative;
+    width: 200px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.existing-image-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.existing-image-item.sortable-chosen {
+    transform: rotate(5deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.image-wrapper {
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+}
+
+.existing-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.existing-image-item:hover .image-overlay {
+    opacity: 1;
+}
+
+.sort-handle {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: move;
+    font-size: 12px;
+}
+
+.image-info {
+    padding: 10px;
+}
+
+.image-info small {
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.image-info input {
+    margin-top: 5px;
+}
+
+/* リンク設定 */
+.link-type-selector .form-check {
+    margin-bottom: 0.5rem;
+}
+
+.link-type-selector .form-check-input {
+    margin-right: 0.5rem;
+}
+
+.link-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.link-text-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.selected-product-info .alert {
+    margin-bottom: 0;
+}
+
+.link-preview {
+    margin-top: 1rem;
+}
+
+/* 商品選択 */
+.product-selector {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'/%3e%3c/svg%3e");
+}
+
+/* フォームの強化 */
+.rich-editor {
+    min-height: 200px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* ボタンの強化 */
+.btn-group .btn {
+    margin-right: 0;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* モーダルの強化 */
+.modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1.5rem;
+}
+
+/* 設定画面 */
+.form-range {
+    width: 100%;
+}
+
+.carousel-preview-container {
+    min-height: 300px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* アラート */
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.alert-info {
+    background: #cce7ff;
+    color: #004085;
+}
+
+/* プログレスバー */
+.progress {
+    height: 6px;
+    border-radius: 3px;
+    background: #e9ecef;
+}
+
+.progress-bar {
+    border-radius: 3px;
+}
+
+/* 検索フォーム */
+.collapse.show {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .existing-images-container {
+        justify-content: center;
+    }
+    
+    .existing-image-item {
+        width: 150px;
+    }
+    
+    .image-wrapper {
+        height: 90px;
+    }
+    
+    .image-preview-container {
+        justify-content: center;
+    }
+    
+    .image-preview-item {
+        width: 120px;
+        height: 80px;
+    }
+    
+    .carousel-preview-container {
+        min-height: 200px;
+    }
+    
+    .stat-item {
+        padding: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-group-sm .btn {
+        padding: 0.125rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .carousel-thumbnail {
+        width: 40px;
+        height: 25px;
+    }
+    
+    .no-image-placeholder {
+        width: 40px;
+        height: 25px;
+        font-size: 14px;
+    }
+    
+    .existing-image-item {
+        width: 120px;
+    }
+    
+    .image-wrapper {
+        height: 70px;
+    }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .upload-dropzone {
+        background: #343a40;
+        border-color: #495057;
+        color: #f8f9fa;
+    }
+    
+    .upload-dropzone:hover,
+    .upload-dropzone.dragover {
+        background: #495057;
+        border-color: #007bff;
+    }
+    
+    .existing-image-item {
+        background: #343a40;
+        border-color: #495057;
+    }
+    
+    .link-field {
+        background: #343a40;
+        border-color: #495057;
+        color: #f8f9fa;
+    }
+    
+    .carousel-preview-container {
+        background: #343a40;
+        border-color: #495057;
+    }
+}
+
+/* アニメーション無効化 */
+@media (prefers-reduced-motion: reduce) {
+    .existing-image-item,
+    .image-preview-item,
+    .upload-dropzone,
+    .form-control,
+    .btn,
+    .modal-content {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .collapse.show {
+        animation: none !important;
+    }
+}
+
+/* 印刷用 */
+@media print {
+    .btn,
+    .modal,
+    .carousel-preview-container {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        page-break-inside: avoid;
+    }
+    
+    .existing-images-container {
+        display: block !important;
+    }
+    
+    .existing-image-item {
+        display: inline-block;
+        margin: 0.5rem;
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,13 @@
+﻿name: レンタル管理プラグイン
+code: Rental
+version: 1.0.0
+service:
+    # プラグインの優先順位（値が小さいほど優先度が高い）
+    priority: 1
+
+orm.path:
+    - /Resource/doctrine
+
+migration:
+    dirs:
+        - /Resource/doctrine/migration

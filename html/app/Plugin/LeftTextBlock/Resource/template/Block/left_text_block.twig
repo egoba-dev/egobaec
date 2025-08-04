@@ -1,0 +1,62 @@
+{% if LeftTextBlocks %}
+    <div class="left-text-block">
+        {% for LeftTextBlock in LeftTextBlocks %}
+            {% if LeftTextBlock.visible %}
+                <div class="left-text-block-item" style="text-align: left; margin-bottom: 20px;">
+                    {% set fontSize = LeftTextBlock.fontSize ?: 16 %}
+                    {% set fontFamily = LeftTextBlock.fontFamily ?: 'inherit' %}
+                    
+                    {% if LeftTextBlock.title %}
+                        <h3 class="left-text-block-title" style="text-align: left; margin-bottom: 10px; font-size: {{ fontSize }}px; font-family: {{ fontFamily }};">
+                            {{ LeftTextBlock.title }}
+                        </h3>
+                    {% endif %}
+                    
+                    {# コンテンツがあり、show_contentフラグがtrueの場合のみ表示 #}
+                    {% if LeftTextBlock.content and LeftTextBlock.content|trim and LeftTextBlock.showContent %}
+                        <div class="left-text-block-content" style="text-align: left; font-size: {{ fontSize }}px; font-family: {{ fontFamily }}; line-height: 1.6;">
+                            {{ LeftTextBlock.content|raw }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<style>
+.left-text-block {
+    width: 100%;
+}
+
+.left-text-block-item {
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.left-text-block-title {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.left-text-block-content {
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.left-text-block-content p {
+    margin-bottom: 10px;
+}
+
+.left-text-block-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .left-text-block-item {
+        margin-bottom: 15px;
+        padding: 8px 0;
+    }
+}
+</style>

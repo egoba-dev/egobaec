@@ -1,0 +1,59 @@
+<div class="ec-mypageRole">
+    <div class="ec-rentalHistoryRole">
+        <div class="ec-pageHeader">
+            <h1>レンタル履歴一覧</h1>
+        </div>
+        
+        {% if RentalOrders is defined and RentalOrders|length > 0 %}
+            <p>{{ RentalOrders|length }}件のレンタル履歴があります</p>
+            
+            <div class="ec-orderRole">
+                <div class="ec-orderRole__detail">
+                    <div class="ec-orderDelivery">
+                        <div class="ec-orderDelivery__title">
+                            レンタル履歴
+                        </div>
+                        <div class="ec-orderDelivery__item">
+                            <table class="ec-orderDelivery__table">
+                                <thead>
+                                    <tr>
+                                        <th>注文日</th>
+                                        <th>商品名</th>
+                                        <th>レンタル期間</th>
+                                        <th>状態</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for RentalOrder in RentalOrders %}
+                                    <tr>
+                                        <td>{{ RentalOrder.create_date|date('Y/m/d') }}</td>
+                                        <td>{{ RentalOrder.product_name|default('商品情報なし') }}</td>
+                                        <td>
+                                            {% if RentalOrder.rental_start_date is defined %}
+                                            {{ RentalOrder.rental_start_date|date('Y/m/d') }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                            〜
+                                            {% if RentalOrder.rental_end_date is defined %}
+                                            {{ RentalOrder.rental_end_date|date('Y/m/d') }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ RentalOrder.rental_status|default('不明') }}</td>
+                                        <td><a href="{{ url('mypage_rental_history_detail', {'id': RentalOrder.id}) }}">詳細</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="ec-para-normal">レンタル履歴はありません</p>
+        {% endif %}
+    </div>
+</div>

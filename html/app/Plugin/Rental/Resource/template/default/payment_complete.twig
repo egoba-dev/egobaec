@@ -1,0 +1,40 @@
+{% extends '@Rental/default/rental_payment_frame.twig' %}
+
+{% set body_class = 'rental_payment_complete' %}
+{% set title = 'rental.payment_complete.title'|trans %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.payment_complete.title'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-reportComplete">
+        {% if error is defined and error %}
+            <div class="ec-alert-warning">
+                <div class="ec-alert-warning__text">
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+        {% else %}
+            <p>{{ 'rental.payment_complete.message'|trans }}</p>
+            
+            {% if RentalOrder is defined %}
+                <p>注文番号: {{ RentalOrder.id }}</p>
+                
+                {% if RentalOrder.ProductClass %}
+                    <p>商品名: {{ RentalOrder.ProductClass.Product.name }}</p>
+                {% endif %}
+                
+                <p>レンタル期間: {{ RentalOrder.RentalStartDate|date('Y年m月d日') }} 〜 {{ RentalOrder.RentalEndDate|date('Y年m月d日') }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="ec-off4Grid">
+        <div class="ec-off4Grid__cell">
+            <a href="{{ url('homepage') }}" class="ec-blockBtn--cancel">{{ 'common.back_to_top'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

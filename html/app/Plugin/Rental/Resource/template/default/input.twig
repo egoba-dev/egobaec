@@ -1,0 +1,155 @@
+{% extends '@Rental/default/rental_frame.twig' %}
+
+{% set body_class = 'rental_input' %}
+
+{% block javascript %}
+<script>
+    $(function() {
+        // 日付選択のためのDatepickerの初期化
+        $('input[type="date"]').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: 0 // 今日以降の日付のみ選択可能
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.front.rental_title'|trans }} - {{ Product.name }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <!-- 商品情報 -->
+                <div class="ec-imageGrid">
+                    <div class="ec-imageGrid__img">
+                        {% if Product.MainListImage %}
+                            <img src="{{ asset(Product.MainListImage) }}">
+                        {% else %}
+                            <img src="{{ asset('assets/img/common/noimage_list.jpg') }}">
+                        {% endif %}
+                    </div>
+                    <div class="ec-imageGrid__content">
+                        <div class="ec-productRole__detail">
+                            <div class="ec-productRole__title">
+                                <h2>{{ Product.name }}</h2>
+                            </div>
+                            {% if Product.code_min %}
+                                <div class="ec-productRole__code">
+                                    {{ 'front.product.code'|trans }}：{{ Product.code_min }}
+                                    {% if Product.code_min != Product.code_max %}
+                                        〜 {{ Product.code_max }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            <div class="ec-productRole__price">
+                                {{ 'rental.front.rental_price'|trans }}：{{ RentalProduct.rentalPriceDaily|price }} / {{ 'common.day'|trans }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- レンタルフォーム -->
+                <form method="post" action="{{ url('rental_input', {'id': Product.id}) }}">
+                    {{ form_widget(form._token) }}
+                    
+                    <!-- product_id, product_class_idが設定されているか確認 -->
+                    {% if form.product_id is defined %}
+                        {{ form_widget(form.product_id, {'value': Product.id}) }}
+                    {% else %}
+                        <input type="hidden" name="rental_front[product_id]" value="{{ Product.id }}">
+                    {% endif %}
+                    
+                    {% if Product.ProductClasses|length > 0 and form.product_class_id is defined %}
+                        {{ form_widget(form.product_class_id, {'value': Product.ProductClasses[0].id}) }}
+                    {% else %}
+                        <input type="hidden" name="rental_front[product_class_id]" value="{{ Product.ProductClasses[0].id }}">
+                    {% endif %}
+
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt>
+                                {{ form_label(form.rental_start_date) }}
+                                <span class="ec-required">{{ 'common.required'|trans }}</span>
+                            </dt>
+                            <dd>
+                                {{ form_widget(form.rental_start_date) }}
+                                {{ form_errors(form.rental_start_date) }}
+                            </dd>
+                        </dl>
+
+                        <dl>
+                            <dt>
+                                {{ form_label(form.rental_period) }}
+                                <span class="ec-required">{{ 'common.required'|trans }}</span>
+                            </dt>
+                            <dd>
+                                {{ form_widget(form.rental_period) }}
+                                {{ form_errors(form.rental_period) }}
+                            </dd>
+                        </dl>
+
+                        <!-- ここに数量フィールドを追加 -->
+                        <dl>
+                            <dt>
+                                {{ form_label(form.quantity) }}
+                                <span class="ec-required">{{ 'common.required'|trans }}</span>
+                            </dt>
+                            <dd>
+                                {{ form_widget(form.quantity) }}
+                                {{ form_errors(form.quantity) }}
+                            </dd>
+                        </dl>
+
+                        {% if form.options is defined %}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.options) }}
+                            </dt>
+                            <dd>
+                                {{ form_widget(form.options) }}
+                                {{ form_errors(form.options) }}
+                            </dd>
+                        </dl>
+                        {% endif %}
+
+                        {% if form.remarks is defined %}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.remarks) }}
+                            </dt>
+                            <dd>
+                                {{ form_widget(form.remarks) }}
+                                {{ form_errors(form.remarks) }}
+                            </dd>
+                        </dl>
+                        {% endif %}
+                    </div>
+
+                    <div class="ec-RegisterRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button type="submit" class="ec-blockBtn--action">{{ 'rental.front.form.next'|trans }}</button>
+                                <a href="{{ url('product_detail', {'id': Product.id}) }}" class="ec-blockBtn--cancel">{{ 'common.back'|trans }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="ec-role">
+                    <div class="ec-alert-warning">
+                        <div class="ec-alert-warning__text">
+                            <p>{{ 'rental.front.rental_terms_notes'|trans }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

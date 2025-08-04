@@ -1,0 +1,69 @@
+{# EC-CUBE ブロック用 Twigファイル #}
+<style>
+    
+    /* リストの枠線を削除 */
+    .custom-checklist {
+        border: none !important;
+    }
+    
+    .custom-checklist .list-group-item {
+        border: none !important;
+        background: transparent;
+        padding-left: 2rem;
+        position: relative;
+    }
+    
+    /* チェックマークアイコンを追加 */
+    .custom-checklist .list-group-item::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+    
+    .android-icon::before{
+        content: "🤖";
+        color: white;
+    }
+    
+    .iphone-icon::before{
+        content: "🍎";
+        color: white;
+    }
+    
+    /* 横一杯の背景色セクション */
+    .full-width-section {
+        width: 100%;
+        
+        border-top: 1px solid #dee2e6; /* Bootstrap の --bs-border-color の代替 */
+        padding: 3rem 0;
+        margin-top: 3rem;
+    }
+</style>
+
+<!-- 横一杯の背景色セクション -->
+<section class="full-width-section">
+    <div class="container">
+        <div class="row">
+            <div class="col mx-auto d-block">
+                <img src="/html/user_data/assets/img/net_shopping.jpg" class="mx-auto d-block" alt="アプリイメージ画像" style="width:60%;">
+            </div>
+            <div class="col">
+                <h3>公式アプリでさらに便利に！</h3>
+                <ol class="list-group custom-checklist mt-4">
+                    <li class="list-group-item">毎回のログイン不要</li>
+                    <li class="list-group-item">出荷日や返却日をお知らせ</li>
+                    <li class="list-group-item">よく使う画面をアクセスしやすく</li>
+                </ol>
+                <div class="">
+                <button type="button" class="btn btn-dark m-4 android-icon">Android</button>
+                <button type="button" class="btn btn-dark m-4 iphone-icon">Iphone</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

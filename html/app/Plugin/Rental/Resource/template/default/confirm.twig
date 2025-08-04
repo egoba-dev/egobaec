@@ -1,0 +1,111 @@
+{% extends '@Rental/default/rental_frame.twig' %}
+
+{% set body_class = 'rental_confirm' %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.confirm.title'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <!-- 商品情報 -->
+                <div class="ec-imageGrid">
+                    <div class="ec-imageGrid__img">
+                        {% if Product.MainListImage %}
+                            <img src="{{ asset(Product.MainListImage) }}">
+                        {% else %}
+                            <img src="{{ asset('assets/img/common/noimage_list.jpg') }}">
+                        {% endif %}
+                    </div>
+                    <div class="ec-imageGrid__content">
+                        <div class="ec-productRole__detail">
+                            <div class="ec-productRole__title">
+                                <h2>{{ Product.name }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ec-borderedDefs">
+                    {# 注文主情報の表示 #}
+                    {% if app.user %}
+                        <dl>
+                            <dt>{{ 'rental.confirm.customer_name'|trans }}</dt>
+                            <dd>{{ app.user.name01 }} {{ app.user.name02 }}</dd>
+                        </dl>
+                        
+                        <dl>
+                            <dt>{{ 'rental.confirm.delivery_address'|trans }}</dt>
+                            <dd>
+                                〒{{ app.user.postal_code }}<br>
+                                {{ app.user.pref.name }}{{ app.user.addr01 }}{{ app.user.addr02 }}
+                            </dd>
+                        </dl>
+                    {% endif %}
+                    
+                    <dl>
+                        <dt>{{ 'rental.confirm.product_name'|trans }}</dt>
+                        <dd>{{ Product.name }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.rental_period'|trans }}</dt>
+                        <dd>{{ rental.start_date }} 〜 {{ rental.end_date }} ({{ days }}{{ 'common.day'|trans }})</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.quantity'|trans }}</dt>
+                        <dd>{{ rental.quantity }}</dd>
+                    </dl>
+
+                    {% if rental.options|length > 0 %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.options'|trans }}</dt>
+                        <dd>
+                            <ul>
+                                {% for option in rental.options %}
+                                    {% if option == 'insurance' %}
+                                        <li>{{ 'rental.option.insurance'|trans }}</li>
+                                    {% elseif option == 'extension' %}
+                                        <li>{{ 'rental.option.extension'|trans }}</li>
+                                    {% elseif option == 'delivery' %}
+                                        <li>{{ 'rental.option.delivery'|trans }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if rental.remarks is not empty %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.remarks'|trans }}</dt>
+                        <dd>{{ rental.remarks|nl2br }}</dd>
+                    </dl>
+                    {% endif %}
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.total_amount'|trans }}</dt>
+                        <dd>{{ rental.price|price }}</dd>
+                    </dl>
+                </div>
+
+                <div class="ec-RegisterRole__actions">
+                    <div class="ec-off4Grid">
+                        <div class="ec-off4Grid__cell">
+                            <form method="post" action="{{ url('rental_payment') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('rental_order') }}">
+                                <button type="submit" class="ec-blockBtn--action">{{ 'rental.payment.next'|trans }}</button>
+                                <a href="{{ url('rental_input', {'id': rental.product_id}) }}" class="ec-blockBtn--cancel">{{ 'common.back'|trans }}</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

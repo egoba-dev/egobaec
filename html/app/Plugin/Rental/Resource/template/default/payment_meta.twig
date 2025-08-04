@@ -1,0 +1,11 @@
+{% set meta_og_type = 'website' %}
+{% set meta_description = '「' ~ Product.name ~ '」のレンタル支払いページです。' %}
+
+<meta name="description" content="{{ meta_description }}">
+<meta property="og:type" content="{{ meta_og_type }}"/>
+<meta property="og:title" content="{{ 'rental.payment.title'|trans }} - {{ Product.name }}"/>
+<meta property="og:description" content="{{ meta_description }}"/>
+<meta property="og:url" content="{{ url('rental_payment') }}"/>
+{% if Product.MainListImage %}
+    <meta property="og:image" content="{{ absolute_url(asset(Product.MainListImage)) }}"/>
+{% endif %}

@@ -1,0 +1,110 @@
+{% extends '@Rental/default/rental_payment_frame.twig' %}
+
+{% set body_class = 'rental_payment' %}
+{% set title = 'レンタル支払い' %}
+
+{% block javascript %}
+<script>
+    $(function() {
+        // フォーム送信時の確認
+        $('form').on('submit', function() {
+            return true;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'rental.payment.title'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-role">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <!-- レンタル情報のサマリー -->
+                <div class="ec-borderedDefs">
+                    <dl>
+                        <dt>{{ 'rental.confirm.product_name'|trans }}</dt>
+                        <dd>{{ Product.name }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.rental_period'|trans }}</dt>
+                        <dd>{{ rental.start_date }} 〜 {{ rental.end_date }}</dd>
+                    </dl>
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.quantity'|trans }}</dt>
+                        <dd>{{ rental.quantity }}</dd>
+                    </dl>
+
+                    {% if rental.options is defined and rental.options|length > 0 %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.options'|trans }}</dt>
+                        <dd>
+                            <ul>
+                                {% for option in rental.options %}
+                                    {% if option == 'insurance' %}
+                                        <li>{{ 'rental.option.insurance'|trans }}</li>
+                                    {% elseif option == 'extension' %}
+                                        <li>{{ 'rental.option.extension'|trans }}</li>
+                                    {% elseif option == 'delivery' %}
+                                        <li>{{ 'rental.option.delivery'|trans }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if rental.remarks is defined and rental.remarks is not empty %}
+                    <dl>
+                        <dt>{{ 'rental.confirm.remarks'|trans }}</dt>
+                        <dd>{{ rental.remarks|nl2br }}</dd>
+                    </dl>
+                    {% endif %}
+
+                    <dl>
+                        <dt>{{ 'rental.confirm.total_amount'|trans }}</dt>
+                        <dd>{{ rental.price|price }}</dd>
+                    </dl>
+                </div>
+
+                <div class="ec-registerRole">
+                    <div class="ec-registerRole__form">
+                        <form method="post" action="{{ url('rental_payment') }}">
+                            {{ form_widget(form._token) }}
+
+                            <div class="ec-borderedDefs">
+                                <dl>
+                                    <dt>
+                                        {{ form_label(form.payment_method) }}
+                                        <span class="ec-required">{{ 'common.required'|trans }}</span>
+                                    </dt>
+                                    <dd>
+                                        <div class="ec-radio">
+                                            {{ form_widget(form.payment_method) }}
+                                            {{ form_errors(form.payment_method) }}
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </div>
+
+                            <div class="ec-registerRole__actions">
+                                <div class="ec-off4Grid">
+                                    <div class="ec-off4Grid__cell">
+                                        <button type="submit" class="ec-blockBtn--action">{{ 'rental.payment.next'|trans }}</button>
+                                        <a href="{{ url('rental_confirm') }}" class="ec-blockBtn--cancel">{{ 'common.back'|trans }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

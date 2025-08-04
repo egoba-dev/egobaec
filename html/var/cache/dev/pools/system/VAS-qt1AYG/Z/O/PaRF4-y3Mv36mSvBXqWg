@@ -1,0 +1,3 @@
+<?php //Plugin%255CMaker42%255CController%255CMakerController
+
+return [PHP_INT_MAX, []];

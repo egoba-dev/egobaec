@@ -1,0 +1,17 @@
+{
+    "name": "ec-cube/maker42",
+    "version": "4.3.0",
+    "description": "メーカー管理プラグイン",
+    "type": "eccube-plugin",
+    "require": {
+        "ec-cube/plugin-installer": "^2.0",
+        "php": ">=7.4"
+    },
+    "suggest": {
+        "ext-sodium": "For better security features, but not strictly required"
+    },
+    "extra": {
+        "code": "Maker42",
+        "id": 2410
+    }
+}

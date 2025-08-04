@@ -1,0 +1,3 @@
+<?php //Plugin%255CRecommend42%255CController%255CRecommendController
+
+return [PHP_INT_MAX, []];

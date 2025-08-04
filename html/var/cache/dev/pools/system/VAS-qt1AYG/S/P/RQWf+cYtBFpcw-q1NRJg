@@ -1,0 +1,22 @@
+<?php //Plugin%255CRental%255CController%255CFront%255CRentalProductController%2523addCart
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/rental/add_cart',
+            ],
+            'name' => [
+                'rental_add_cart',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

@@ -1,0 +1,205 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['content', 'plugin_left_text_block'] %}
+
+{% block title %}左寄せテキストブロック{% if LeftTextBlock.id %}編集{% else %}新規作成{% endif %}{% endblock %}
+{% block sub_title %}左寄せテキストブロック{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">
+                                    {% if LeftTextBlock.id %}
+                                        左寄せテキストブロック編集
+                                    {% else %}
+                                        左寄せテキストブロック新規作成
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="col-4 text-end">
+                                <a class="btn btn-secondary btn-sm" href="{{ path('plugin_left_text_block_admin_index') }}">
+                                    <i class="fa fa-arrow-left fa-lg mr-1"></i>一覧に戻る
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>タイトル</span>
+                                <span class="badge badge-primary ml-1">必須</span>
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.title) }}
+                                {{ form_errors(form.title) }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>コンテンツ</span>
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.content) }}
+                                {{ form_errors(form.content) }}
+                                <small class="form-text text-muted">HTMLタグが使用できます。改行は&lt;br&gt;タグで表現してください。</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>コンテンツ表示</span>
+                            </div>
+                            <div class="col">
+                                <div class="form-check">
+                                    {{ form_widget(form.show_content) }}
+                                    {{ form_label(form.show_content) }}
+                                </div>
+                                {{ form_errors(form.show_content) }}
+                                {{ form_help(form.show_content) }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>フォントサイズ</span>
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.font_size) }}
+                                {{ form_errors(form.font_size) }}
+                                <small class="form-text text-muted">10〜72pxの範囲で指定してください。未入力の場合は16pxになります。</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>フォントファミリー</span>
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.font_family) }}
+                                {{ form_errors(form.font_family) }}
+                                <small class="form-text text-muted">テキストのフォントを選択してください。</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>表示順</span>
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.sort_no) }}
+                                {{ form_errors(form.sort_no) }}
+                                {{ form_help(form.sort_no) }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>表示設定</span>
+                            </div>
+                            <div class="col">
+                                <div class="form-check">
+                                    {{ form_widget(form.visible) }}
+                                    {{ form_label(form.visible) }}
+                                </div>
+                                {{ form_errors(form.visible) }}
+                            </div>
+                        </div>
+
+                        <!-- プレビューエリア -->
+                        <div class="row mb-3">
+                            <div class="col-2">
+                                <span>プレビュー</span>
+                            </div>
+                            <div class="col">
+                                <div id="preview-area" class="border p-3" style="background-color: #f8f9fa;">
+                                    <div id="preview-content" style="text-align: left;">
+                                        プレビューエリア
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="c-conversionArea">
+                            <div class="c-conversionArea__container">
+                                <div class="row justify-content-between align-items-center">
+                                    <div class="col-6">
+                                        <div class="c-conversionArea__leftBlockItem">
+                                            <a class="c-baseLink" href="{{ path('plugin_left_text_block_admin_index') }}">
+                                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                                <span>一覧画面に戻る</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row align-items-center justify-content-end">
+                                            <div class="col-auto">
+                                                <button class="btn btn-primary btn-ec-conversion px-5" type="submit">
+                                                    登録
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // リアルタイムプレビュー機能
+        function updatePreview() {
+            const title = document.getElementById('left_text_block_title').value;
+            const content = document.getElementById('left_text_block_content').value;
+            const fontSize = document.getElementById('left_text_block_font_size').value || 16;
+            const fontFamily = document.getElementById('left_text_block_font_family').value || 'inherit';
+            const showContent = document.getElementById('left_text_block_show_content').checked;
+            
+            const previewContent = document.getElementById('preview-content');
+            
+            let previewHtml = '';
+            if (title) {
+                previewHtml += `<h3 style="font-size: ${fontSize}px; font-family: ${fontFamily}; text-align: left; margin-bottom: 10px;">${title}</h3>`;
+            }
+            if (content && showContent) {
+                previewHtml += `<div style="font-size: ${fontSize}px; font-family: ${fontFamily}; text-align: left;">${content}</div>`;
+            }
+            
+            if (!previewHtml) {
+                previewHtml = 'プレビューエリア';
+            }
+            
+            previewContent.innerHTML = previewHtml;
+        }
+
+        // イベントリスナーを設定
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleInput = document.getElementById('left_text_block_title');
+            const contentInput = document.getElementById('left_text_block_content');
+            const fontSizeInput = document.getElementById('left_text_block_font_size');
+            const fontFamilyInput = document.getElementById('left_text_block_font_family');
+            const showContentInput = document.getElementById('left_text_block_show_content');
+
+            [titleInput, contentInput, fontSizeInput, fontFamilyInput, showContentInput].forEach(function(input) {
+                if (input) {
+                    input.addEventListener('input', updatePreview);
+                    input.addEventListener('change', updatePreview);
+                }
+            });
+
+            // 初期プレビュー表示
+            updatePreview();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% for Block in Blocks %}
+    <!-- ▼{{ Block.name }} -->
+    {% if Block.use_controller %}
+        {% if Block.file_name starts with "maker_product_" %}
+            {% set blockId = Block.file_name|replace({"maker_product_": ""}) %}
+            {% set controller = "Plugin\\MakerProductBlock\\Controller\\Block\\MakerProductController::index" %}
+            {{ render(controller(controller, {"id": blockId})) }}
+        {% elseif Block.file_name starts with "left_text_block_" %}
+            {% set blockId = Block.file_name|replace({"left_text_block_": ""}) %}
+            {% set controller = "Plugin\\LeftTextBlock\\Controller\\BlockController::index" %}
+            {{ render(controller(controller, {"id": blockId})) }}
+        {% else %}
+            {{ render(path('block_' ~ Block.file_name)) }}
+        {% endif %}
+    {% else %}
+        {{ include_dispatch('Block/' ~ Block.file_name ~ '.twig') }}
+    {% endif %}
+    <!-- ▲{{ Block.name }} -->
+{% endfor %}

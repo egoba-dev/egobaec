@@ -1,0 +1,18 @@
+{% if app.request.get('_route') matches '/^rental_/' %}
+    {# レンタル関連のルートの場合は何もしない #}
+    {# カスタムメタタグはプラグイン側で提供 #}
+{% elseif Product is defined and Product.id is defined %}
+    {# 商品ページ用 #}
+    {% set meta_og_type = 'product' %}
+    {% set meta_canonical = url('product_detail', {'id': Product.id}) %}
+{% elseif app.request.get('_route') == 'homepage' %}
+    {% set meta_og_type = 'website' %}
+    {% set meta_canonical = url('homepage') %}
+{% elseif Page is defined and Page.edit_type == 0 and Page.url is defined and Page.url is not empty %}
+    {# 追加：Page.urlが空でないことを確認 #}
+    {% set meta_canonical = url(eccube_config.eccube_user_data_route, {'route': Page.url}) %}
+{% endif %}
+
+<meta property="og:type" content="{{ meta_og_type|default('article') }}"/>
+<meta property="og:site_name" content="{{ BaseInfo.shop_name }}"/>
+{% set meta_description = meta_description | default(Page.description) %}

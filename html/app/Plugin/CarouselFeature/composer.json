@@ -1,0 +1,12 @@
+{
+    "name": "ec-cube/carousel-feature",
+    "version": "1.0.0",
+    "description": "WordPress風カルーセル特集機能プラグイン",
+    "type": "eccube-plugin",
+    "require": {
+        "ec-cube/plugin-installer": "~2.0"
+    },
+    "extra": {
+        "code": "CarouselFeature"
+    }
+}

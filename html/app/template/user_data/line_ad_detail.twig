@@ -1,0 +1,97 @@
+{% extends 'default_frame.twig' %}
+{% block stylesheet %}
+<style>
+    /* モーダルの横幅を広くする */
+    .modal-lg-custom {
+        max-width: 600px;
+    }
+    
+    /* リンクスタイルを調整 */
+    .action-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        text-align: center;
+    }
+    
+    .action-link:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    /* QRコード画像のサイズ調整 */
+    .qr-code {
+        max-width: 250px;
+        width: 100%;
+        height: auto;
+    }
+</style>
+{% endblock %}
+{% block main %}
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="lineModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="lineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg-custom">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <br>
+                    <br>
+                    <br>
+                    <img src="/html/user_data/assets/img/icon/LINE_QR.png" alt="LINE_QR" class="qr-code">
+                    <br>
+                    <br>
+                    <br>
+                    <h4>QRコードをスキャンするとLINEの友だちに追加されます</h4>
+                    <p>QRコードをスキャンするには、LINEアプリのコードリーダーをご利用ください。</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 class="text-center mt-5">レンタルサービス</h2>
+    <p class="text-center mt-2">友だち10000人</p>
+    
+    <div class="d-flex justify-content-center align-items-center gap-4 my-4">
+        <div class="">
+            <a href="#" class="action-link" data-bs-toggle="modal" data-bs-target="#lineModal">
+                <img src="/html/user_data/assets/img/icon/add.png" width="50px" height="50px" alt="追加">
+                <p class="mb-0">追加</p>
+            </a>
+        </div>
+        <div class="">
+            <a href="#" class="action-link" data-bs-toggle="modal" data-bs-target="#lineModal">
+                <img src="/html/user_data/assets/img/icon/talk.png" width="50px" height="50px" alt="トーク">
+                <p class="mb-0">トーク</p>
+            </a>
+        </div>
+        <div class="">
+            <a href="{{ url('homepage') }}" class="action-link">
+                <img src="/html/user_data/assets/img/icon/homepage.png" width="50px" height="50px" alt="homepage">
+                <p class="mb-0">サービスページ</p>
+            </a>
+        </div>
+    </div>
+    <div class="w-50 mx-auto mt-4">
+        <h3>SNS</h3>
+        <div class="card p-3">
+            <p class="text-center">他のSNSからも情報を確認できます。</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="https://x.com/"><img src="/html/user_data/assets/img/icon/x.png" alt="x" width="40" height="40"></a>
+                <a href="https://www.instagram.com/" target="_blank"><img src="/html/user_data/assets/img/icon/insta.png" alt="insta" width="40" height="40"></a>
+                <a href="https://www.youtube.com/" target="_blank"><img src="/html/user_data/assets/img/icon/youtube.png" alt="youtube" width="40" height="40"></a>
+            </div>
+        </div>
+    </div>
+</div><!--container-->
+{% endblock %}
+{% block javascript %}
+<script>
+    // ページ読み込み時にモーダルを自動表示
+    document.addEventListener('DOMContentLoaded', function() {
+        var lineModal = new bootstrap.Modal(document.getElementById('lineModal'));
+        lineModal.show();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'default_frame.twig' %}
+
+{# JavaScript部分でメタ情報を上書き #}
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // メタタグを動的に設定
+    document.querySelector('meta[property="og:type"]').content = 'website';
+    
+    // descriptionの設定
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+        metaDesc.content = 'レンタル履歴詳細ページです。';
+    } else {
+        var newMeta = document.createElement('meta');
+        newMeta.setAttribute('name', 'description');
+        newMeta.setAttribute('content', 'レンタル履歴詳細ページです。');
+        document.head.appendChild(newMeta);
+    }
+});
+</script>
+{% endblock %}
+
+{% set mypageno = 'rental_history' %}
+{% set body_class = 'mypage' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>{{ 'front.mypage.title'|trans }}/レンタル履歴詳細</h1>
+            </div>
+            {% include 'Mypage/navi.twig' %}
+        </div>
+        
+        <div class="ec-orderRole">
+            <div class="ec-orderRole__detail">
+                <div class="ec-orderOrder">
+                    <div class="ec-definitions">
+                        <dt>レンタル日時</dt>
+                        <dd>{{ RentalOrder.create_date|date_sec }}</dd>
+                    </div>
+                    <div class="ec-definitions">
+                        <dt>レンタル番号</dt>
+                        <dd>{{ RentalOrder.id }}</dd>
+                    </div>
+                    <div class="ec-definitions">
+                        <dt>レンタルステータス</dt>
+                        <dd>{{ RentalOrder.getRentalStatusName }}</dd>
+                    </div>
+                </div>
+                
+                <div class="ec-orderDelivery">
+                    <div class="ec-rectHeading">
+                        <h2>レンタル商品情報</h2>
+                    </div>
+                    <div class="ec-orderDelivery__item">
+                        <div class="ec-imageGrid">
+                            <div class="ec-imageGrid__img">
+                                {% if RentalOrder.Product %}
+                                    <img src="{{ asset(RentalOrder.Product.MainListImage|no_image_product, 'save_image') }}">
+                                {% else %}
+                                    <img src="{{ asset(''|no_image_product, 'save_image') }}">
+                                {% endif %}
+                            </div>
+                            <div class="ec-imageGrid__content">
+                                <p>
+                                    {% if RentalOrder.Product %}
+                                        <a href="{{ url('product_detail', {'id': RentalOrder.Product.id}) }}">{{ RentalOrder.Product.name }}</a>
+                                    {% else %}
+                                        商品情報がありません
+                                    {% endif %}
+                                    × {{ RentalOrder.quantity }}
+                                </p>
+                                <p>{{ RentalOrder.price|price }}</p>
+                                <p class="ec-color-accent">レンタル期間: {{ RentalOrder.RentalStartDate|date('Y年m月d日') }} ～ {{ RentalOrder.RentalEndDate|date('Y年m月d日') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ec-orderPayment">
+                    <div class="ec-rectHeading">
+                        <h2>お支払い情報</h2>
+                    </div>
+                    <p>支払方法 : {{ RentalOrder.payment_method }}</p>
+                </div>
+                
+                <div class="ec-orderConfirm">
+                    <div class="ec-rectHeading">
+                        <h2>備考</h2>
+                    </div>
+                    <p>
+                        {% if RentalOrder.options_json is defined and RentalOrder.options_json %}
+                            {% set options = RentalOrder.options_json|rental_json_decode %}
+                            {% if options.remarks|default('') %}
+                                {{ options.remarks|nl2br }}
+                            {% else %}
+                                特にありません
+                            {% endif %}
+                        {% else %}
+                            特にありません
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="ec-orderRole__summary">
+                <div class="ec-totalBox">
+                    <div class="ec-totalBox__total">合計<span class="ec-totalBox__price">{{ RentalOrder.price|price }}</span><span class="ec-totalBox__taxLabel">{{ 'common.tax_include'|trans }}</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ec-role">
+            <a href="{{ url('mypage_rental_history') }}" class="ec-inlineBtn">レンタル履歴一覧に戻る</a>
+        </div>
+    </div>
+{% endblock %}

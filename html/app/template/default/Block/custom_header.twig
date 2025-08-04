@@ -1,0 +1,149 @@
+{#
+/**
+ * カスタムヘッダーブロック
+ * custom_header.twig
+ */
+#}
+
+<style>
+    .custom-header .navbar-nav .nav-link {
+        text-align: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .custom-header .navbar-nav .nav-link:hover {
+        color: #0d6efd;
+    }
+    
+    .custom-header .navbar-nav .nav-link img {
+        display: block;
+        margin: 0 auto 0.25rem;
+    }
+    
+    .custom-header .border-right {
+        border-right: 1px solid #dee2e6;
+    }
+    
+    .custom-header .search-form {
+        min-width: 250px;
+    }
+    
+    .custom-header .search-form .form-control {
+        height: 32px;
+        font-size: 0.875rem;
+    }
+    
+    .custom-header .search-form .btn {
+        height: 32px;
+        padding: 0.25rem 1rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        min-width: 60px;
+    }
+    
+    @media (max-width: 991px) {
+        .custom-header .navbar-nav {
+            text-align: center;
+        }
+        
+        .custom-header .search-form {
+            min-width: 100%;
+            margin-top: 1rem;
+        }
+    }
+    
+    /* スムーズスクロール */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<script>
+    function scrollToSection(sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            // ヘッダーの高さを考慮してオフセット調整
+            const headerHeight = 80;
+            const elementPosition = element.offsetTop - headerHeight;
+            
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+</script>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary custom-header mt-3">
+    <div class="container-fluid">
+        <!-- ブランドロゴ -->
+        <a class="navbar-brand" href="{{ url('homepage') }}">
+            <img src="/html/user_data/assets/img/icon/logo.png" alt="{{ BaseInfo.shop_name }}" width="30" height="30">
+            {{ BaseInfo.shop_name }}
+        </a>
+        
+        <!-- ハンバーガーメニュー（モバイル用） -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#customNavbar" aria-controls="customNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- ナビゲーションメニュー -->
+        <div class="collapse navbar-collapse" id="customNavbar">
+            <ul class="navbar-nav ms-auto">
+                {% if not is_granted('ROLE_USER') %}
+                <li class="nav-item">
+                    <a class="nav-link border-right" href="{{ url('entry') }}">
+                        <img src="/html/user_data/assets/img/icon/signin.png" width="30" height="30" alt="新規会員登録">
+                        {{ '新規会員登録'|trans }}
+                    </a>
+                </li>
+                {% endif %}
+                
+                <li class="nav-item">
+                    <a class="nav-link border-right" href="#question-section" onclick="scrollToSection('question-section')">
+                        <img src="/html/user_data/assets/img/icon/question.png" width="30" height="30" alt="Q&A">
+                        {{'Q＆A'|trans}}
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link border-right" href="{{ url('mypage_favorite') }}">
+                        <img src="/html/user_data/assets/img/icon/favorite.png" width="30" height="30" alt="お気に入り">
+                        {{ 'お気に入り'|trans }}
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    {% if is_granted('ROLE_USER') %}
+                        <a class="nav-link border-right" href="{{ url('mypage') }}">
+                            <img src="/html/user_data/assets/img/icon/login.png" width="30" height="30" alt="マイページ">
+                            {{ 'マイページ'|trans }}
+                        </a>
+                    {% else %}
+                        <a class="nav-link border-right" href="{{ url('mypage_login') }}">
+                            <img src="/html/user_data/assets/img/icon/login.png" width="30" height="30" alt="ログイン">
+                            {{ 'ログイン'|trans }}
+                        </a>
+                    {% endif %}
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link border-right" href="{{ url('cart') }}">
+                        <img src="/html/user_data/assets/img/icon/cart.png" width="30" height="30" alt="カート">
+                        {{ 'カート'|trans }}
+                    </a>
+                </li>
+                
+                <li class="nav-item d-flex align-items-center m-3">
+                    <form class="d-flex search-form" method="get" action="{{ url('product_list') }}" role="search">
+                        <input class="form-control me-2" type="search" name="name" placeholder="{{ '商品名・キーワード'|trans }}" aria-label="search" value="{{ search_word|default('') }}">
+                        <button class="btn btn-outline-secondary" type="submit">{{ '検索'|trans }}</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

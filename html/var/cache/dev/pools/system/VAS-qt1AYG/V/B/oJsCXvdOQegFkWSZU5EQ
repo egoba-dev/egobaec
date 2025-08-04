@@ -1,0 +1,3 @@
+<?php //Plugin%255CCarouselFeature%255CController%255CAdmin%255CCarouselListController%2523getStatusLabel
+
+return [PHP_INT_MAX, []];

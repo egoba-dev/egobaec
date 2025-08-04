@@ -1,0 +1,22 @@
+<?php //Plugin%255CRecommend42%255CController%255CRecommendController%2523moveRank
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/%eccube_admin_route%/plugin/recommend/sort_no/move',
+            ],
+            'name' => [
+                'plugin_recommend_rank_move',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

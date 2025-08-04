@@ -1,0 +1,6 @@
+services:
+    Customize\Twig\Extension\NewItemExtension:
+        arguments:
+            - '@Eccube\Repository\ProductRepository'
+        tags:
+            - { name: twig.extension }

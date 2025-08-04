@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>レンタル履歴一覧</title>
+    <meta property="og:type" content="website"/>
+    <meta name="description" content="レンタル履歴ページです。">
+    <meta property="og:description" content="レンタル履歴ページです。">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body id="page_mypage_rental_history" class="mypage">
+    <div class="ec-layoutRole">
+        <header class="ec-layoutRole__header">
+            <div class="ec-headerNaviRole">
+                <div class="ec-headerNaviRole__left">
+                    <div class="ec-headerNaviRole__nav">
+                        <a href="{{ url('homepage') }}">
+                            <img src="{{ asset('assets/img/common/logo.png') }}" alt="EC-CUBE">
+                        </a>
+                    </div>
+                </div>
+                <div class="ec-headerNaviRole__right">
+                    <div class="ec-headerNaviRole__nav">
+                        <a href="{{ url('mypage') }}">マイページ</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="ec-layoutRole__contents">
+            <div class="ec-layoutRole__main">
+                <div class="ec-mypageRole">
+                    <div class="ec-pageHeader">
+                        <h1>マイページ</h1>
+                    </div>
+                    <div class="ec-navlistRole">
+                        <ul class="ec-navlistRole__navlist">
+                            <li class="ec-navlistRole__item">
+                                <a href="{{ url('mypage') }}">ご注文履歴</a>
+                            </li>
+                            <li class="ec-navlistRole__item">
+                                <a href="{{ url('mypage_favorite') }}">お気に入り一覧</a>
+                            </li>
+                            <li class="ec-navlistRole__item active">
+                                <a href="{{ url('mypage_rental_history') }}">レンタル履歴</a>
+                            </li>
+                            <li class="ec-navlistRole__item">
+                                <a href="{{ url('mypage_change') }}">会員情報編集</a>
+                            </li>
+                            <li class="ec-navlistRole__item">
+                                <a href="{{ url('mypage_withdraw') }}">退会手続き</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ec-mypageRole">
+                    <div class="ec-rentalHistoryRole">
+                        <div class="ec-pageHeader">
+                            <h1>レンタル履歴一覧</h1>
+                        </div>
+                        
+                        {% if RentalOrders|length > 0 %}
+                            <p>{{ RentalOrders|length }}件のレンタル履歴があります</p>
+                            
+                            <div class="ec-orderRole">
+                                <div class="ec-orderRole__detail">
+                                    <div class="ec-orderDelivery">
+                                        <div class="ec-orderDelivery__title">
+                                            レンタル履歴
+                                        </div>
+                                        <div class="ec-orderDelivery__item">
+                                            <table class="ec-orderDelivery__table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>注文日</th>
+                                                        <th>商品名</th>
+                                                        <th>レンタル期間</th>
+                                                        <th>状態</th>
+                                                        <th>詳細</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for RentalOrder in RentalOrders %}
+                                                    <tr>
+                                                        <td>{{ RentalOrder.create_date is defined ? RentalOrder.create_date|date('Y/m/d') : '-' }}</td>
+                                                        <td>{{ RentalOrder.product_name is defined ? RentalOrder.product_name : '商品情報なし' }}</td>
+                                                        <td>
+                                                            {{ RentalOrder.rental_start_date is defined ? RentalOrder.rental_start_date|date('Y/m/d') : '-' }}
+                                                            〜 
+                                                            {{ RentalOrder.rental_end_date is defined ? RentalOrder.rental_end_date|date('Y/m/d') : '-' }}
+                                                        </td>
+                                                        <td>{{ RentalOrder.rental_status is defined ? RentalOrder.rental_status : '不明' }}</td>
+                                                        <td><a href="{{ url('mypage_rental_history_detail', {'id': RentalOrder.id}) }}">詳細</a></td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p class="ec-para-normal">レンタル履歴はありません</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="ec-layoutRole__footer">
+            <div class="ec-footerRole">
+                <div class="ec-footerRole__inner">
+                    <p>© EC-CUBE</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

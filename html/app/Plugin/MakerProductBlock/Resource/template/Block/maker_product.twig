@@ -1,0 +1,65 @@
+
+{% if Products is defined and Products is not empty %}
+    {# 外部CSSの読み込み #}
+    <link rel="stylesheet" href="{{ asset('MakerProductBlock/css/maker-product-block.css', 'plugin') }}" type="text/css">
+
+    <div class="ec-maker-block">
+        <div class="ec-maker-block__header">
+            <h2 class="ec-maker-block__title">{{ maker_name|default('') }}</h2>
+            {% if maker_id is defined and maker_id is not empty %}
+                {# メーカー専用の商品リストページへのリンク #}
+                <a href="{{ url('maker_product_list', {'makerId': maker_id}) }}" class="ec-maker-block__link">
+                    {{ 'すべての商品を見る'|trans }} <i class="fas fa-angle-right"></i>
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="ec-maker-block__carousel" 
+             data-visible-count="{{ visible_count|default(4) }}" 
+             data-visible-count-sp="{{ visible_count_sp|default(1) }}">
+            {% for Product in Products %}
+                {% if Product is defined and Product.id is defined %}
+                    <div class="ec-maker-block__item ">
+                        <a href="{{ url('product_detail', {'id': Product.id}) }}">
+                            <div class="ec-maker-block__item-image">
+                                {% set mainImage = Product.getMainListImage %}
+                                {% if mainImage is defined and mainImage is not empty %}
+                                    <img src="{{ asset(mainImage, 'save_image') }}" alt="{{ Product.name|default('') }}">
+                                {% else %}
+                                    <img src="{{ asset(''|no_image_product, 'save_image') }}" alt="{{ Product.name|default('') }}">
+                                {% endif %}
+                            </div>
+                            <div class="ec-maker-block__item-name">{{ Product.name|default('') }}</div>
+                            <div class="ec-maker-block__item-price">
+                                {% if Product.hasProductClass is defined and Product.hasProductClass %}
+                                    {% set priceMin = Product.getPrice02IncTaxMin %}
+                                    {% set priceMax = Product.getPrice02IncTaxMax %}
+                                    {% if priceMin == priceMax %}
+                                        {{ priceMin|price }}
+                                    {% else %}
+                                        {{ priceMin|price }} ～ {{ priceMax|price }}
+                                    {% endif %}
+                                {% else %}
+                                    {% set price = Product.getPrice02IncTaxMin %}
+                                    {% if price is defined %}
+                                        {{ price|price }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {# 外部JSの読み込み #}
+    <script src="{{ asset('MakerProductBlock/js/maker-product-carousel.js', 'plugin') }}"></script>
+{% else %}
+    {# 商品がない場合の表示（デバッグ用、本番では削除可能） #}
+    {% if app.debug %}
+        <div style="padding: 20px; text-align: center; color: #666;">
+            表示する商品がありません。
+        </div>
+    {% endif %}
+{% endif %}

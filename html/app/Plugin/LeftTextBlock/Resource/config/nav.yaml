@@ -1,0 +1,7 @@
+eccube_nav:
+  content:
+    children:
+      left_text_block:
+        name: 左寄せテキストブロック
+        icon: fa-align-left
+        url: plugin_left_text_block_admin_index

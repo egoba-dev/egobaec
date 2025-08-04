@@ -1,0 +1,7 @@
+id: category_product_block
+name: カテゴリー商品ブロック
+has_child: false
+icon: fa-th-large
+url: category_product_block_admin_config
+
+parent: plugin

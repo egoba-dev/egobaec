@@ -1,0 +1,89 @@
+{# マイページトップに表示するレンタル情報のテンプレートも作成 #}
+<style>
+    .ec-layoutRole__contentTop {
+        order: 0; /* フッターより前に表示するための優先順位 */
+    }
+    .ec-layoutRole__footer {
+        order: 1;
+    }
+    .ec-rental {
+        margin-bottom: 40px;
+    }
+</style>
+
+{% if app.user %}
+{% set rental_orders = [] %}
+{% if app.user.getRentalOrders is defined %}
+    {% set rental_orders_temp = null %}
+    {% if app.user.getRentalOrders() is not null %}
+        {% set rental_orders_temp = app.user.getRentalOrders() %}
+        {% set rental_orders = [] %}
+        {% for ro in rental_orders_temp %}
+            {% if ro.rentalStatusId is defined and ro.rentalStatusId is not null and ro.rentalStatusId in [1, 2] %}
+                {% set rental_orders = rental_orders|merge([ro]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endif %}
+{% if rental_orders|length > 0 %}
+<div class="ec-layoutRole__contentTop">
+<div class="ec-secHeading">
+<span class="ec-secHeading__en">RENTAL STATUS</span>
+<span class="ec-secHeading__line"></span>
+<span class="ec-secHeading__ja">レンタルステータス</span>
+</div>
+<div class="ec-rental">
+<div class="ec-rental__header">
+<p class="ec-rental__title">現在レンタル中の商品</p>
+</div>
+<div class="ec-rental__body">
+<div class="ec-rental__currentList">
+{% for RentalOrder in rental_orders|slice(0, 5) %}
+<div class="ec-rental__current">
+<div class="ec-rental__currentImage">
+    {% if RentalOrder.RentalProduct is defined and RentalOrder.RentalProduct %}
+        {% if RentalOrder.RentalProduct.photo %}
+            <img src="{{ asset(RentalOrder.RentalProduct.photo, 'save_image') }}">
+        {% else %}
+            <img src="{{ asset('assets/img/common/noimage.png') }}">
+        {% endif %}
+    {% else %}
+        <img src="{{ asset('assets/img/common/noimage.png') }}">
+    {% endif %}
+</div>
+<div class="ec-rental__currentDetail">
+    <p class="ec-rental__currentName">
+        {% if RentalOrder.product_name is defined %}
+            {{ RentalOrder.product_name }}
+        {% elseif RentalOrder.RentalProduct is defined and RentalOrder.RentalProduct %}
+            {{ RentalOrder.RentalProduct.name }}
+        {% else %}
+            商品情報なし
+        {% endif %}
+    </p>
+    <p class="ec-rental__currentPeriod">
+        レンタル期間：
+        {% if RentalOrder.rental_start_date is defined %}
+            {{ RentalOrder.rental_start_date|date('Y/m/d') }}
+        {% else %}
+            -
+        {% endif %}
+        〜
+        {% if RentalOrder.rental_end_date is defined %}
+            {{ RentalOrder.rental_end_date|date('Y/m/d') }}
+        {% else %}
+            -
+        {% endif %}
+    </p>
+</div>
+</div>
+{% endfor %}
+<div class="ec-rental__currentMore">
+<a href="{{ url('mypage_rental_history') }}" class="ec-inlineBtn--cancel">全てのレンタル履歴を見る</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endif %}
+{% endif %}

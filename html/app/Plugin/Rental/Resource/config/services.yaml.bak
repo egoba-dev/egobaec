@@ -1,0 +1,78 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Plugin\Rental\:
+    resource: '../../*'
+    exclude: '../../{Entity,Resource,Tests}'
+
+  # コントローラー
+  Plugin\Rental\Controller\:
+    resource: '../../Controller'  
+    tags: ['controller.service_arguments']
+
+  # サービス
+  Plugin\Rental\Service\RentalService:
+    autowire: true
+    arguments:
+      $requestStack: '@request_stack'
+    
+  Plugin\Rental\Service\RentalCalculationService:
+    autowire: true
+
+  # 管理画面ナビゲーションへの追加
+  Plugin\Rental\Nav:
+    class: Plugin\Rental\Nav
+    public: true
+    arguments:
+      - '@Eccube\Common\EccubeConfig'
+    tags:
+      - { name: eccube.nav }
+
+  # イベントリスナー
+  Plugin\Rental\EventListener\MyPageListener:
+    tags:
+      - { name: kernel.event_subscriber }
+      
+  Plugin\Rental\EventListener\RentalOrderListener:
+    arguments:
+      $requestStack: '@request_stack'
+      $rentalProductRepository: '@Plugin\Rental\Repository\RentalProductRepository'
+    tags:
+      - { name: kernel.event_subscriber }
+      
+  Plugin\Rental\EventListener\ProductDetailListener:
+    tags:
+      - { name: kernel.event_subscriber }
+
+  # フォーム拡張の登録
+  Plugin\Rental\Form\Extension\Admin\ProductTypeExtension:
+    arguments:
+      $rentalProductRepository: '@Plugin\Rental\Repository\RentalProductRepository'
+      $logger: '@logger'
+    tags:
+      - { name: form.type_extension, extended_type: Eccube\Form\Type\Admin\ProductType }
+
+  # テンプレートフックの登録
+  Plugin\Rental\TemplateHook\Admin\ProductEditHook:
+    tags:
+      - { name: eccube.event_subscriber }
+
+  # イベントサブスクライバーの登録
+  Plugin\Rental\EventSubscriber\AdminProductSubscriber:
+    arguments:
+      - '@Plugin\Rental\Repository\RentalProductRepository'
+    tags:
+      - { name: kernel.event_subscriber }
+
+  # 決済関連コントローラー
+  Plugin\Rental\Controller\Front\RentalPaymentController:
+    autowire: true
+    tags: ['controller.service_arguments']
+
+  # 決済関連フォーム
+  Plugin\Rental\Form\Type\RentalPaymentType:
+    autowire: true
+    tags: ['form.type']

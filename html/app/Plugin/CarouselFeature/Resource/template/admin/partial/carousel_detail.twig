@@ -1,0 +1,372 @@
+{% extends 'default_frame.twig' %}
+
+{% block title %}{{ carousel.title }} - カルーセル特集{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ carousel.content|striptags|truncate(160) }}">
+<meta property="og:title" content="{{ carousel.title }}">
+<meta property="og:description" content="{{ carousel.content|striptags|truncate(160) }}">
+{% if carousel.validImages|length > 0 %}
+    <meta property="og:image" content="{{ url('carousel_feature_image', {filename: carousel.validImages|first.fileName}) }}">
+{% endif %}
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ url('carousel_feature_detail', {id: carousel.id}) }}">
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ asset('assets/css/carousel.css', 'CarouselFeatureBundle') }}">
+<style>
+.carousel-detail-section {
+    padding: 2rem 0;
+    background: #f8f9fa;
+}
+
+.carousel-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.carousel-detail-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.carousel-detail-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.carousel-detail-meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.carousel-detail-images {
+    margin-bottom: 3rem;
+}
+
+.carousel-detail-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.carousel-detail-action {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.detail-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid #007bff;
+}
+
+.detail-btn:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.detail-btn.external {
+    background: #28a745;
+    border-color: #28a745;
+}
+
+.detail-btn.external:hover {
+    background: #1e7e34;
+    border-color: #1e7e34;
+}
+
+.carousel-detail-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-caption {
+    transform: translateY(0);
+}
+
+.breadcrumb-section {
+    background: white;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .carousel-detail-title {
+        font-size: 2rem;
+    }
+    
+    .carousel-detail-content {
+        padding: 1.5rem;
+    }
+    
+    .carousel-detail-gallery {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-item img {
+        height: 200px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<section class="carousel-detail-section">
+    {# パンくずリスト #}
+    <div class="breadcrumb-section">
+        <div class="carousel-detail-container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url('homepage') }}">
+                            <i class="fa fa-home"></i> ホーム
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ url('carousel_feature_display') }}">カルーセル特集</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ carousel.title }}
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="carousel-detail-container">
+        {# ヘッダー #}
+        <header class="carousel-detail-header">
+            <h1 class="carousel-detail-title">{{ carousel.title }}</h1>
+            <div class="carousel-detail-meta">
+                <span class="meta-item">
+                    <i class="fa fa-calendar"></i>
+                    公開日: {{ carousel.createDate|date('Y年m月d日') }}
+                </span>
+                {% if carousel.updateDate != carousel.createDate %}
+                    <span class="meta-item ml-3">
+                        <i class="fa fa-edit"></i>
+                        更新日: {{ carousel.updateDate|date('Y年m月d日') }}
+                    </span>
+                {% endif %}
+            </div>
+        </header>
+
+        {# 画像ギャラリー #}
+        {% if carousel.validImages|length > 0 %}
+            <div class="carousel-detail-images">
+                {% if carousel.validImages|length == 1 %}
+                    {# 単一画像の場合 #}
+                    {% set image = carousel.validImages|first %}
+                    <div class="single-image text-center">
+                        <picture>
+                            {% if image.webpUrl %}
+                                <source srcset="{{ image.webpUrl }}" type="image/webp">
+                            {% endif %}
+                            <img src="{{ image.url }}" 
+                                 alt="{{ image.resolvedAltText }}"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 500px; width: auto;">
+                        </picture>
+                    </div>
+                {% else %}
+                    {# 複数画像の場合 #}
+                    <div class="carousel-detail-gallery">
+                        {% for image in carousel.validImages %}
+                            <div class="gallery-item">
+                                <picture>
+                                    {% if image.webpUrl %}
+                                        <source srcset="{{ image.webpUrl }}" type="image/webp">
+                                    {% endif %}
+                                    <img src="{{ image.url }}" 
+                                         alt="{{ image.resolvedAltText }}"
+                                         loading="{{ loop.first ? 'eager' : 'lazy' }}">
+                                </picture>
+                                {% if image.altText %}
+                                    <div class="gallery-caption">
+                                        <p class="mb-0">{{ image.altText }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# コンテンツ #}
+        {% if carousel.content %}
+            <div class="carousel-detail-content">
+                {{ carousel.content|raw }}
+            </div>
+        {% endif %}
+
+        {# アクションボタン #}
+        {% if carousel.hasValidLink %}
+            <div class="carousel-detail-action">
+                {% set linkUrl = carousel.resolvedLinkUrl %}
+                {% set linkText = carousel.resolvedLinkText %}
+                {% set isExternal = carousel.linkType == 'external' %}
+                
+                <a href="{{ linkUrl }}" 
+                   class="detail-btn{{ isExternal ? ' external' : '' }}"
+                   {% if isExternal %}
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                   {% endif %}>
+                    {{ linkText|default('詳細を見る') }}
+                    {% if isExternal %}
+                        <i class="fa fa-external-link-alt ml-2"></i>
+                    {% endif %}
+                </a>
+            </div>
+        {% endif %}
+
+        {# 関連商品表示（商品リンクの場合） #}
+        {% if carousel.linkType == 'product' and carousel.product %}
+            <div class="related-product">
+                <h3 class="text-center mb-4">関連商品</h3>
+                <div class="card mx-auto" style="max-width: 400px;">
+                    {% if carousel.product.mainListImage %}
+                        <img src="{{ asset(carousel.product.mainListImage, 'save_image') }}" 
+                             class="card-img-top" 
+                             alt="{{ carousel.product.name }}"
+                             style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ carousel.product.name }}</h5>
+                        {% if carousel.product.descriptionDetail %}
+                            <p class="card-text text-muted small">
+                                {{ carousel.product.descriptionDetail|striptags|truncate(100) }}
+                            </p>
+                        {% endif %}
+                        <p class="card-text">
+                            <strong class="text-primary">{{ carousel.product.price02|price }}</strong>
+                        </p>
+                        <a href="{{ url('product_detail', {id: carousel.product.id}) }}" 
+                           class="btn btn-primary">
+                            商品詳細を見る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {# 戻るリンク #}
+        <div class="text-center mt-4">
+            <a href="{{ url('carousel_feature_display') }}" class="btn btn-outline-secondary">
+                <i class="fa fa-arrow-left"></i> カルーセル一覧に戻る
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script>
+// 画像の遅延読み込み
+document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for lazy loading
+    if ('IntersectionObserver' in window) {
+        var imageObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        var lazyImages = document.querySelectorAll('img[loading="lazy"]');
+        lazyImages.forEach(function(img) {
+            imageObserver.observe(img);
+        });
+    }
+
+    // 画像ギャラリーのクリックでモーダル表示（簡易版）
+    var galleryItems = document.querySelectorAll('.gallery-item img');
+    galleryItems.forEach(function(img) {
+        img.addEventListener('click', function() {
+            var modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+            
+            var modalImg = document.createElement('img');
+            modalImg.src = this.src;
+            modalImg.style.cssText = 'max-width:90%;max-height:90%;object-fit:contain;';
+            
+            modal.appendChild(modalImg);
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

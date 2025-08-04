@@ -1,0 +1,104 @@
+{# admin/rental_history.twig #}
+{# レンタル履歴一覧画面のテンプレート #}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['rental', 'rental_history'] %}
+
+{% block title %}{{ 'rental.admin.history.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'rental.admin.history.sub_title'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <style>
+        .status-reserved {
+            color: #fff;
+            background-color: #FF9C00;
+        }
+        .status-renting {
+            color: #fff;
+            background-color: #437EC4;
+        }
+        .status-returned {
+            color: #fff;
+            background-color: #25B877;
+        }
+        .status-overdue {
+            color: #fff;
+            background-color: #C04949;
+        }
+        .status-canceled {
+            color: #fff;
+            background-color: #999;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="{{ 'rental.admin.history.tooltip'|trans }}">
+                            <span>{{ 'rental.admin.history.list_title'|trans }}</span>
+                            <i class="fa fa-question-circle fa-lg ml-1"></i>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if pagination.totalItemCount > 0 %}
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'rental.admin.rental.id'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.product_name'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.order_no'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.customer_name'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.rental_start_date'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.rental_end_date'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.return_date'|trans }}</th>
+                                    <th>{{ 'rental.admin.rental.status'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for RentalOrder in pagination %}
+                                    <tr>
+                                        <td>{{ RentalOrder.id }}</td>
+                                        <td>
+                                            <a href="{{ url('admin_product_product_edit', {'id': RentalOrder.ProductClass.Product.id}) }}">
+                                                {{ RentalOrder.ProductClass.Product.name }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url('admin_order_edit', {'id': RentalOrder.Order.id}) }}">
+                                                {{ RentalOrder.Order.order_no }}
+                                            </a>
+                                        </td>
+                                        <td>{{ RentalOrder.Order.name01 }} {{ RentalOrder.Order.name02 }}</td>
+                                        <td>{{ RentalOrder.rental_start_date|date('Y/m/d') }}</td>
+                                        <td>{{ RentalOrder.rental_end_date|date('Y/m/d') }}</td>
+                                        <td>{{ RentalOrder.return_date ? RentalOrder.return_date|date('Y/m/d') : '-' }}</td>
+                                        <td>
+                                            {% if RentalOrder.rental_status_id == 3 %}
+                                                <span class="badge status-returned">{{ 'rental.admin.order.status.returned'|trans }}</span>
+                                            {% elseif RentalOrder.rental_status_id == 5 %}
+                                                <span class="badge status-canceled">{{ 'rental.admin.order.status.canceled'|trans }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="row justify-content-md-center mb-4">
+                                {% include '@admin/pager.twig' with {'pages': pagination.paginationData, 'routes': 'admin_rental_history'} %}
+                            </div>
+                        {% else %}
+                            <div class="text-center p-4">
+                                {{ 'rental.admin.history.no_data'|trans }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['content', 'carousel_feature'] %}
+
+{% block title %}カルーセル特集 - 記事一覧{% endblock %}
+{% block sub_title %}記事一覧{% endblock %}
+
+{% block stylesheet %}
+<style>
+/* 管理画面用スタイル */
+.carousel-thumbnail {
+    width: 50px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.no-image-placeholder {
+    width: 50px;
+    height: 30px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.sort-handle {
+    cursor: move;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sort-handle:hover {
+    color: #495057;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="c-contentsArea__cols">
+    <div class="c-contentsArea__primaryCol">
+        <div class="c-primaryCol">
+            
+            {# 統計情報 #}
+            <div class="row mb-3">
+                <div class="col-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <i class="fa fa-list fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold">{{ statistics.total|default(0) }}</div>
+                                    <div>総記事数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <i class="fa fa-eye fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold">{{ statistics.published|default(0) }}</div>
+                                    <div>公開中</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <i class="fa fa-edit fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold">{{ statistics.draft|default(0) }}</div>
+                                    <div>下書き</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mr-3">
+                                    <i class="fa fa-eye-slash fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="font-weight-bold">{{ statistics.inactive|default(0) }}</div>
+                                    <div>非公開</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# アクションバー #}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url('admin_carousel_feature_create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> 新規作成
+                            </a>
+                            <a href="{{ url('admin_carousel_feature_config') }}" class="btn btn-info">
+                                <i class="fa fa-cog"></i> 表示設定
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# 記事一覧 #}
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">記事一覧</span>
+                    <span class="badge badge-secondary ml-2">{{ carousels|length }}件</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if carousels is empty %}
+                        <div class="text-center py-5">
+                            <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">記事がありません。</p>
+                            <a href="{{ url('admin_carousel_feature_create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> 最初の記事を作成
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="60">画像</th>
+                                        <th>タイトル</th>
+                                        <th width="100">ステータス</th>
+                                        <th width="120">リンク</th>
+                                        <th width="80">並び順</th>
+                                        <th width="120">更新日</th>
+                                        <th width="150">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for carousel in carousels %}
+                                        <tr>
+                                           {# 画像表示 - 修正された画像パス #}
+                                            <td>
+                                                {% if carousel.carouselImages|length > 0 %}
+                                                    {% set firstImage = carousel.carouselImages|first %}
+                                                    {% if firstImage.fileName %}
+                                                        <img src="{{ firstImage.directImageUrl }}" 
+                                                             alt="{{ carousel.title }}" 
+                                                             class="carousel-thumbnail"
+                                                             onload="console.log('List image loaded: {{ firstImage.fileName }}'); this.nextElementSibling.style.display='none';"
+                                                             onerror="console.log('List image failed: {{ firstImage.fileName }}, trying asset'); this.src='{{ asset(firstImage.imagePath, 'save_image') }}'; this.onerror=function(){console.log('List asset also failed: {{ firstImage.fileName }}'); this.style.display='none'; this.nextElementSibling.style.display='inline-flex';};">
+                                                        
+                                                        <div class="no-image-placeholder" style="display: none;">
+                                                            <i class="fa fa-exclamation-triangle text-warning"></i>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="no-image-placeholder">
+                                                            <i class="fa fa-image text-muted"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="no-image-placeholder">
+                                                        <i class="fa fa-image text-muted"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            
+                                            <td>
+                                                <div class="font-weight-bold">
+                                                    <a href="{{ url('admin_carousel_feature_edit', {id: carousel.id}) }}">
+                                                        {{ carousel.title }}
+                                                    </a>
+                                                </div>
+                                                {% if carousel.content %}
+                                                    <small class="text-muted">
+                                                        {% set content = carousel.content|striptags %}
+                                                        {{ content|length > 50 ? content|slice(0, 50) ~ '...' : content }}
+                                                    </small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% set status = carousel.status %}
+                                                {% if status == 'published' %}
+                                                    <span class="badge badge-success">公開</span>
+                                                {% elseif status == 'draft' %}
+                                                    <span class="badge badge-warning">下書き</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">非公開</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if carousel.linkType == 'product' and carousel.product %}
+                                                    <span class="badge badge-info">商品</span><br>
+                                                    {% set productName = carousel.product.name %}
+                                                    <small>{{ productName|length > 20 ? productName|slice(0, 20) ~ '...' : productName }}</small>
+                                                {% elseif carousel.linkType == 'external' %}
+                                                    <span class="badge badge-warning">外部</span><br>
+                                                    {% set url = carousel.linkUrl %}
+                                                    <small>{{ url|length > 20 ? url|slice(0, 20) ~ '...' : url }}</small>
+                                                {% elseif carousel.linkType == 'internal' %}
+                                                    <span class="badge badge-primary">内部</span><br>
+                                                    {% set url = carousel.linkUrl %}
+                                                    <small>{{ url|length > 20 ? url|slice(0, 20) ~ '...' : url }}</small>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">なし</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="sort-handle" title="ドラッグして並び替え">
+                                                    <i class="fa fa-grip-vertical"></i>
+                                                    {{ carousel.sortNo }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small>{{ carousel.updateDate|date('Y/m/d H:i') }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{{ url('admin_carousel_feature_edit', {id: carousel.id}) }}" 
+                                                       class="btn btn-primary btn-sm" title="編集">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    
+                                                    {# 削除フォーム #}
+                                                    <form method="post" action="{{ url('admin_carousel_feature_delete', {id: carousel.id}) }}" 
+                                                          style="display: inline-block;" 
+                                                          onsubmit="return confirm('記事「{{ carousel.title|e('js') }}」を削除しますか？\n※この操作は取り消せません。');">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('admin') }}">
+                                                        <button type="submit" class="btn btn-danger btn-sm" title="削除">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# CSRF トークン #}
+<input type="hidden" id="csrf_token" value="{{ csrf_token('admin') }}">
+{% endblock %}
+
+{% block javascript %}
+<script>
+function deleteCarousel(id, title) {
+    if (confirm('記事「' + title + '」を削除しますか？\n※この操作は取り消せません。')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ app.request.basePath }}/{{ eccube_config.eccube_admin_route }}/carousel_feature/' + id + '/delete';
+        
+        // HTTPメソッド（DELETE）
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+        form.appendChild(method);
+        
+        // CSRFトークン
+        const token = document.createElement('input');
+        token.type = 'hidden';
+        token.name = '_admin_csrf_token';
+        token.value = document.getElementById('csrf_token').value;
+        form.appendChild(token);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

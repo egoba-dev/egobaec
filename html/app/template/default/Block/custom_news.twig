@@ -1,0 +1,25 @@
+{% set NewsList = repository('Eccube\\Entity\\News').getList()|slice(0, 5) %}
+<div class="" style="">
+        <div class="ec-newsRole__news">
+            {% for News in NewsList %}
+                <div class="ec-newsRole__newsItem mt-3">
+                    <div class="ec-newsRole__newsHeading">
+                        <div class="ec-newsRole__newsDate" style="font-weight:bold;">
+                            {{ News.publish_date|date_day }}
+                        </div>
+                        <div class="ec-newsRole__newsColumn border-top">
+                            <div class="ec-newsRole__newsTitle h5 mt-3">
+                                <a href="{{ path('custom_news_detail', {'id': News.id}) }}"
+                                   {% if News.link_method == '1' %}target="_blank"{% endif %}>
+                                    {{ News.title }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ec-newsRole__newsDescription">
+                        {# 必要に応じて説明文などを追加 #}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>

@@ -1,0 +1,239 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['rental', 'rental_orders'] %}
+
+{% block title %}{{ 'rental.admin.order.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'rental.admin.order.sub_title'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        .modal-search-form-block {
+            min-height: 300px;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script>
+        $(function() {
+            // 検索条件を開閉する
+            $('#search_box_toggle').on('click', function() {
+                $('#search_box').toggleClass('d-none');
+            });
+
+            // ステータス更新
+            $('.btn-status').on('click', function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.data('url');
+                var token = $this.data('token');
+                var $form = $('<form action="' + url + '" method="post"></form>');
+                $form.append($('<input type="hidden" name="_method" value="PUT">'));
+                $form.append($('<input type="hidden" name="_token" value="' + token + '">'));
+                $form.appendTo(document.body);
+                $form.submit();
+                return false;
+            });
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="row justify-content-between mb-2">
+                    <div class="col-6">
+                        <a class="btn btn-ec-regular" href="{{ url('admin_rental_edit', {id: 0}) }}">{{ 'rental.admin.order.create_new'|trans }}</a>
+                    </div>
+                    <div class="col-6 text-right">
+                        <div class="btn-group">
+                            <button type="button" id="search_box_toggle" class="btn btn-ec-regular">{{ 'rental.admin.order.search_condition'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="search_box" class="mb-4 d-none">
+                    <form name="search_form" id="search_form" method="post" action="{{ url('admin_rental_orders') }}">
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-header">
+                                <h4 class="box-title">{{ 'rental.admin.order.search_condition'|trans }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.reservation_id'|trans }}</label>
+                                                {{ form_widget(searchForm.id) }}
+                                                {{ form_errors(searchForm.id) }}
+                                            </div>
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.product_name'|trans }}</label>
+                                                {{ form_widget(searchForm.product_name) }}
+                                                {{ form_errors(searchForm.product_name) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.customer_name'|trans }}</label>
+                                                {{ form_widget(searchForm.customer_name) }}
+                                                {{ form_errors(searchForm.customer_name) }}
+                                            </div>
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.status'|trans }}</label>
+                                                {{ form_widget(searchForm.rental_status_id) }}
+                                                {{ form_errors(searchForm.rental_status_id) }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.start_date_from'|trans }}</label>
+                                                {{ form_widget(searchForm.start_date_from) }}
+                                                {{ form_errors(searchForm.start_date_from) }}
+                                            </div>
+                                            <div class="col-6">
+                                                <label>{{ 'rental.admin.search.start_date_to'|trans }}</label>
+                                                {{ form_widget(searchForm.start_date_to) }}
+                                                {{ form_errors(searchForm.start_date_to) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-right">
+                                {{ form_widget(searchForm._token) }}
+                                <button type="submit" class="btn btn-ec-conversion">{{ 'admin.common.search'|trans }}</button>
+                                <button type="reset" class="btn btn-ec-sub">{{ 'admin.common.reset'|trans }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th class="border-top-0">{{ 'rental.admin.order.reservation_id'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.rental_period'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.product_name'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.customer_name'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.quantity'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.price'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.order.status'|trans }}</th>
+                                    <th class="border-top-0">{{ 'rental.admin.common.operation'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for RentalOrder in pagination %}
+                                    <tr>
+                                        <td>{{ RentalOrder.id }}</td>
+                                        <td>{{ RentalOrder.rental_start_date|date('Y-m-d') }} 〜 {{ RentalOrder.rental_end_date|date('Y-m-d') }}</td>
+                                        <td>
+                                            {% if RentalOrder.Product %}
+                                                {{ RentalOrder.Product.name }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if RentalOrder.Customer %}
+                                                {{ RentalOrder.Customer.name01 }} {{ RentalOrder.Customer.name02 }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ RentalOrder.quantity }}</td>
+                                        <td>{{ RentalOrder.price|price }}</td>
+                                        <td>
+                                            {% if RentalOrder.rental_status_id == 1 %}
+                                                <span class="badge badge-primary">{{ 'rental.admin.order.status.reserved'|trans }}</span>
+                                            {% elseif RentalOrder.rental_status_id == 2 %}
+                                                <span class="badge badge-warning">{{ 'rental.admin.order.status.renting'|trans }}</span>
+                                            {% elseif RentalOrder.rental_status_id == 3 %}
+                                                <span class="badge badge-success">{{ 'rental.admin.order.status.returned'|trans }}</span>
+                                            {% elseif RentalOrder.rental_status_id == 4 %}
+                                                <span class="badge badge-danger">{{ 'rental.admin.order.status.overdue'|trans }}</span>
+                                            {% elseif RentalOrder.rental_status_id == 5 %}
+                                                <span class="badge badge-secondary">{{ 'rental.admin.order.status.canceled'|trans }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <a class="btn btn-ec-actionIcon mr-2" href="{{ url('admin_rental_edit', {id: RentalOrder.id}) }}" data-toggle="tooltip" data-placement="top" title="{{ 'admin.common.edit'|trans }}">
+                                                    <i class="fa fa-pencil fa-lg text-secondary"></i>
+                                                </a>
+                                                
+                                                <!-- ステータスボタン -->
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-ec-actionIcon dropdown-toggle" data-toggle="dropdown">
+                                                        <i class="fa fa-ellipsis-v fa-lg text-secondary"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        {% if RentalOrder.rental_status_id == 1 %}
+                                                            <a class="dropdown-item btn-status" href="#" data-url="{{ url('admin_rental_status', {id: RentalOrder.id, status: 2}) }}" data-token="{{ csrf_token(RentalOrder.id) }}">
+                                                                <span class="text-warning">{{ 'rental.admin.order.change_to_renting'|trans }}</span>
+                                                            </a>
+                                                            <a class="dropdown-item btn-status" href="#" data-url="{{ url('admin_rental_status', {id: RentalOrder.id, status: 5}) }}" data-token="{{ csrf_token(RentalOrder.id) }}">
+                                                                <span class="text-secondary">{{ 'rental.admin.order.change_to_canceled'|trans }}</span>
+                                                            </a>
+                                                        {% elseif RentalOrder.rental_status_id == 2 %}
+                                                            <a class="dropdown-item btn-status" href="#" data-url="{{ url('admin_rental_status', {id: RentalOrder.id, status: 3}) }}" data-token="{{ csrf_token(RentalOrder.id) }}">
+                                                                <span class="text-success">{{ 'rental.admin.order.change_to_returned'|trans }}</span>
+                                                            </a>
+                                                            <a class="dropdown-item btn-status" href="#" data-url="{{ url('admin_rental_status', {id: RentalOrder.id, status: 4}) }}" data-token="{{ csrf_token(RentalOrder.id) }}">
+                                                                <span class="text-danger">{{ 'rental.admin.order.change_to_overdue'|trans }}</span>
+                                                            </a>
+                                                        {% elseif RentalOrder.rental_status_id == 3 or RentalOrder.rental_status_id == 4 or RentalOrder.rental_status_id == 5 %}
+                                                            <a class="dropdown-item btn-status" href="#" data-url="{{ url('admin_rental_status', {id: RentalOrder.id, status: 1}) }}" data-token="{{ csrf_token(RentalOrder.id) }}">
+                                                                <span class="text-primary">{{ 'rental.admin.order.change_to_reserved'|trans }}</span>
+                                                            </a>
+                                                        {% endif %}
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_modal_{{ RentalOrder.id }}">
+                                                            <span class="text-danger">{{ 'admin.common.delete'|trans }}</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- 削除モーダル -->
+                                            <div class="modal fade" id="delete_modal_{{ RentalOrder.id }}" tabindex="-1" role="dialog" aria-labelledby="delete_modal_label" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="delete_modal_label">{{ 'rental.admin.order.delete_confirm_title'|trans }}</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>{{ 'rental.admin.order.delete_confirm_message'|trans({'%id%': RentalOrder.id}) }}</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-ec-sub" data-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
+                                                            <form method="post" action="{{ url('admin_rental_delete', {id: RentalOrder.id}) }}">
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token(RentalOrder.id) }}">
+                                                                <button type="submit" class="btn btn-ec-delete">{{ 'admin.common.delete'|trans }}</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ページネーション -->
+                {% if pagination.totalItemCount > 0 %}
+                    <div class="row justify-content-md-center mb-4">
+                        {% include "@admin/pager.twig" with {'pages': pagination.paginationData, 'routes': 'admin_rental_orders'} %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock main %}
