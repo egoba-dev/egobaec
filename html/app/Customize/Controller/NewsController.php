@@ -19,7 +19,7 @@ class NewsController extends AbstractController
     {
         $news = $entityManager->getRepository(News::class)->find($id);
         if (!$news) {
-            throw $this->createNotFoundException('»ØÄê¤µ¤ì¤¿¿·Ãå¾ðÊó¤ÏÂ¸ºß¤·¤Þ¤»¤ó¡£');
+            throw $this->createNotFoundException('æŒ‡å®šã•ã‚ŒãŸãƒ‹ãƒ¥ãƒ¼ã‚¹ãŒå­˜åœ¨ã—ã¾ã›ã‚“');
         }
         return $this->render('@user_data/custom_news_detail.twig', ['news' => $news]);
 
